@@ -260,6 +260,12 @@ function test_arb_mat_inversion()
    @test overlaps(A*C, one(S))
    @test contains(C, B)
 
+   T = MatrixSpace(RR, 2, 3)
+
+   C = T([1 2 1000; 0 3 1])
+
+   @test_throws ErrorNotSquare inv(C)
+
    println("PASS")
 end
 
@@ -311,6 +317,12 @@ function test_arb_mat_charpoly()
 
    @test contains(g, f)
 
+   T = MatrixSpace(RR, 2, 3)
+   
+   B = T([1 2 3; 4 5 6])
+   
+   @test_throws ErrorNotSquare charpoly(R, B)
+
    println("PASS")
 end
 
@@ -326,6 +338,12 @@ function test_arb_mat_det()
    d = det(A)
 
    @test contains(d, 24)
+
+   T = MatrixSpace(RR, 2, 3)
+   
+   B = T([1 2 3; 4 5 6])
+
+   @test_throws ErrorNotSquare det(B)
 
    println("PASS")
 end
@@ -344,6 +362,13 @@ function test_arb_mat_exp()
    C = exp(A)
 
    @test overlaps(B, C)
+
+   T = MatrixSpace(RR, 2, 3)
+   
+   D = T([1 2 3; 4 5 6])
+
+   @test_throws ErrorNotSquare exp(D)
+
 
    println("PASS")
 end
@@ -380,6 +405,13 @@ function test_arb_mat_linear_solving()
    @test overlaps(B*y, b')
 
    @test contains(y', ZZ[1 1 1])
+
+   U = MatrixSpace(RR, 2, 3)
+   
+   C = U([1 2 3; 4 5 6])
+
+   @test_throws ErrorNotSquare solve(C,b)
+
 
    println("PASS")
 end

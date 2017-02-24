@@ -348,6 +348,12 @@ function test_gen_mat_powering()
 
    @test A^0 == one(S)
 
+   T = MatrixSpace(R, 2, 3)
+
+   B = T( map(R, [1 2 3; 4 5 6]) )
+
+   @test_throws ErrorNotSquare B^1
+
    println("PASS")
 end
 
@@ -388,6 +394,12 @@ function test_gen_mat_trace()
    A = S([t + 1 t R(1); t^2 t t; R(-2) t + 2 t^2 + t + 1])
 
    @test trace(A) == t^2 + 3t + 2
+
+   T = MatrixSpace(R, 2, 3)
+
+   B = T( map(R, [1 2 3; 4 5 6]) )
+
+   @test_throws ErrorNotSquare trace(B)
 
    println("PASS")
 end
@@ -524,6 +536,12 @@ function test_gen_mat_det()
       
       @test det(M) == Nemo.det_clow(M)
    end
+
+   T = MatrixSpace(S, 2, 3)
+
+   B = T( map(S, [1 2 3; 4 5 6]) )
+
+   @test_throws ErrorNotSquare det(B)
 
    println("PASS")
 end
@@ -673,6 +691,12 @@ function test_gen_mat_solve()
 
    @test M*x == d*b
 
+   T = MatrixSpace(R, 2, 3)
+
+   B = T( map(R, [1 2 3; 4 5 6]) )
+
+   @test_throws ErrorNotSquare solve(B, B)
+
    println("PASS")
 end
 
@@ -693,6 +717,13 @@ function test_gen_mat_solve_triu()
 
       @test M*x == b
    end
+
+   T = MatrixSpace(K, 2, 3)
+
+   B = T( map(K, [1 2 3; 4 5 6]) )
+
+   @test_throws ErrorNotSquare solve_triu(B, B, false)
+
 
    println("PASS")
 end
@@ -866,6 +897,13 @@ function test_gen_mat_inversion()
       @test M*X == d*one(T)
    end
 
+   T = MatrixSpace(S, 2, 3)
+
+   B = T( map(S, [1 2 3; 4 5 6]) )
+
+   @test_throws ErrorNotSquare inv(B)
+
+
    println("PASS")   
 end
 
@@ -886,6 +924,12 @@ function test_gen_mat_hessenberg()
          @test is_hessenberg(A)
       end
    end
+
+   S = MatrixSpace(R, 2, 3)
+   
+   M = S( map(R, [1 2 3; 4 5 6]) )
+
+   @test_throws ErrorNotSquare hessenberg(M)
 
    println("PASS")   
 end
@@ -948,6 +992,16 @@ function test_gen_mat_charpoly()
    p2 = charpoly(U, M)
 
    @test p1 == p2
+
+   T = MatrixSpace(R, 2, 3)
+   U, z = PolynomialRing(R, "z")
+
+   A = T( map(R, [1 2 3; 4 5 6]) )
+
+   @test_throws ErrorNotSquare charpoly(U, A)
+   @test_throws ErrorNotSquare charpoly_hessenberg!(U, A)
+   @test_throws ErrorNotSquare charpoly_danilevsky!(U, A)
+   @test_throws ErrorNotSquare charpoly_danilevsky_ff!(U, A)
 
    println("PASS")   
 end
@@ -1018,6 +1072,14 @@ function test_gen_mat_minpoly()
 
    @test minpoly(T, M) == 1
 
+   R, x = FiniteField(3, 1, "x")
+   T, y = PolynomialRing(R, "y")
+   S = MatrixSpace(R, 2, 3)
+
+   M = S( map(R, [1 2 3; 4 5 6]) )
+
+   @test_throws ErrorNotSquare minpoly(T, M) 
+
    R, x = PolynomialRing(ZZ, "x")
    S, y = PolynomialRing(R, "y")
    U, z = PolynomialRing(S, "z")
@@ -1056,6 +1118,14 @@ function test_gen_mat_minpoly()
    p2 = minpoly(U, M)
 
    @test p1 == p2
+
+   R, x = PolynomialRing(ZZ, "x")
+   T, y = PolynomialRing(R, "y")
+   S = MatrixSpace(R, 2, 3)
+
+   A = S( map(R, [1 2 3; 4 5 6]) )
+
+   @test_throws ErrorNotSquare minpoly(T, A) 
 
    println("PASS")   
 end

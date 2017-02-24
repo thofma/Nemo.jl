@@ -138,6 +138,8 @@ include("ambiguities.jl") # remove ambiguity warnings
 
 include("Groups.jl")
 
+include("Error.jl")
+
 ###########################################################
 #
 #   Package handle creation

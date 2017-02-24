@@ -197,8 +197,6 @@ function test_nmod_mat_manipulation()
 
   @test_throws ErrorException one(MatrixSpace(ResidueRing(ZZ, 2), 1, 2))
 
-  @test issquare(a)
-
   @test a == a
   @test a == deepcopy(a)
   @test a != aa
@@ -371,6 +369,8 @@ function test_nmod_mat_powering()
   @test g == MatrixSpace(Z17, 3, 3)([1 2 2; 2 13 12; 2 12 15])
 
   @test_throws ErrorException f^(ZZ(2)^1000)
+  
+  @test_throws ErrorNotSquare a^1
 
   println("PASS")
 end
@@ -449,19 +449,17 @@ function test_nmod_mat_trace_det()
 
   @test c == Z17(13)
 
-  @test_throws ErrorException trace(b)
+  @test_throws ErrorNotSquare trace(b)
 
   c = det(a)
 
   @test c == zero(Z17)
 
-  @test_throws ErrorException det(b)
+  @test_throws ErrorNotSquare det(b)
 
   c = det(aa)
 
   @test c == Z17(13)
-
-  a = R([ 1 2 3 1; 3 2 1 2; 1 3 2 0])
 
   println("PASS")
 end
@@ -515,7 +513,7 @@ function test_nmod_mat_inv()
 
   @test c == parent(aa)([12 13 1; 14 13 15; 4 4 1])
 
-  @test_throws ErrorException inv(a)
+  @test_throws ErrorNotSquare inv(a)
 
   @test_throws ErrorException inv(transpose(a)*a)
 
@@ -542,6 +540,8 @@ function test_nmod_mat_solve()
   a = zero(R)
 
   @test_throws ErrorException  solve(a,c)
+
+  @test_throws ErrorNotSquare solve(a,b)
 
   println("PASS")
 end
@@ -692,6 +692,12 @@ function test_nmod_mat_charpoly()
          @test p1 == p2
       end
    end
+
+   S = MatrixSpace(R, 2, 3)
+   U, x = PolynomialRing(R, "x")
+   a = S([1 2 3; 4 5 6])
+   
+   @test_throws ErrorNotSquare charpoly(U, a)
 
    println("PASS")   
 end

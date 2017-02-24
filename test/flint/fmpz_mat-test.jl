@@ -156,6 +156,12 @@ function test_fmpz_mat_powering()
 
    @test A^0 == one(S)
 
+   T = MatrixSpace(ZZ, 2, 3)
+
+   B = T([fmpz(1) 2 3; 4 5 6])
+
+   @test_throws ErrorNotSquare B^1
+
    println("PASS")
 end
 
@@ -192,6 +198,12 @@ function test_fmpz_mat_trace()
    A = S([fmpz(2) 3 5; 1 4 7; 9 6 3])
  
    @test trace(A) == 9
+
+   T = MatrixSpace(ZZ, 2, 3)
+
+   B = T([fmpz(1) 2 3; 4 5 6])
+
+   @test_throws ErrorNotSquare trace(B)
 
    println("PASS")
 end
@@ -312,6 +324,14 @@ function test_fmpz_mat_det()
    @test det_given_divisor(A, 9) == 27
 
    @test det_given_divisor(A, fmpz(9)) == 27
+
+   T = MatrixSpace(ZZ, 2, 3)
+
+   B = T([fmpz(1) 2 3; 4 5 6])
+
+   @test_throws ErrorNotSquare det(B)
+   @test_throws ErrorNotSquare det_divisor(B)
+   @test_throws ErrorNotSquare det_given_divisor(B, 9)
 
    println("PASS")
 end
@@ -462,6 +482,11 @@ function test_fmpz_mat_solve()
    (Y, k) = solve_dixon(A, B)
 
    @test reduce_mod(Y, k) == reduce_mod(X, k)
+
+   C = T([fmpz(1); 3; 5])
+
+   @test_throws ErrorNotSquare solve(C, B)
+   @test_throws ErrorNotSquare solve_dixon(C, B)
  
    println("PASS")
 end

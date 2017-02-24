@@ -164,6 +164,12 @@ function test_fmpq_mat_powering()
 
    @test A^0 == one(S)
 
+   T = MatrixSpace(QQ, 2, 3)
+
+   B = T([fmpq(1) 2 3; 4 5 6])
+
+   @test_throws ErrorNotSquare B^1
+
    println("PASS")
 end
 
@@ -203,6 +209,12 @@ function test_fmpq_mat_trace()
    A = S([fmpq(2) 3 5; 1 4 7; 9 6 3])
  
    @test trace(A) == 9
+
+   T = MatrixSpace(QQ, 2, 3)
+
+   B = T([fmpq(1) 2 3; 4 5 6])
+
+   @test_throws ErrorNotSquare trace(B)
 
    println("PASS")
 end
@@ -268,6 +280,12 @@ function test_fmpq_mat_det()
    A = S([fmpq(2) 3 5; 1 4 7; 19 3 7])
    
    @test det(A) == 27
+
+   T = MatrixSpace(QQ, 2, 3)
+
+   B = T([fmpq(1) 2 3; 4 5 6])
+
+   @test_throws ErrorNotSquare det(B)
 
    println("PASS")
 end
@@ -347,6 +365,11 @@ function test_fmpq_mat_solve()
    Y = solve_dixon(A, B)
 
    @test X == Y
+
+   C = T([fmpq(1); 3; 5])
+
+   @test_throws ErrorNotSquare solve(C, B)
+   @test_throws ErrorNotSquare solve_dixon(C, B)
    
    println("PASS")
 end
@@ -378,6 +401,12 @@ function test_fmpq_mat_charpoly()
    
    @test charpoly(R, A) == x^3 - 9*x^2 - 64*x + 30
 
+   T = MatrixSpace(QQ, 2, 3)
+
+   B = T([fmpq(1) 2 3; 4 5 6])
+
+   @test_throws ErrorNotSquare charpoly(R, B)
+
    println("PASS")
 end
 
@@ -401,6 +430,12 @@ function test_fmpq_mat_minpoly()
    end
    
    @test degree(minpoly(R, M)) == 5
+
+   T = MatrixSpace(QQ, 2, 3)
+
+   B = T([fmpq(1) 2 3; 4 5 6])
+
+   @test_throws ErrorNotSquare minpoly(R, B)
    
    println("PASS")
 end

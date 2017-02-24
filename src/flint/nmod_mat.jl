@@ -5,7 +5,7 @@
 ################################################################################
 
 export nmod_mat, NmodMatSpace, getindex, setindex!, set_entry!, deepcopy, rows, 
-       cols, parent, base_ring, zero, one, issquare, show, transpose,
+       cols, parent, base_ring, zero, one, show, transpose,
        transpose!, rref, rref!, trace, det, rank, inv, solve, lufact,
        sub, window, hcat, vcat, Array, lift, lift!, MatrixSpace, check_parent,
        howell_form, howell_form!, strong_echelon_form, strong_echelon_form!
@@ -34,8 +34,6 @@ end
 size(x::nmod_mat) = tuple(x.r, x.c)
 
 size(t::nmod_mat, d) = d <= 2 ? size(t)[d] : 1
-
-issquare(a::nmod_mat) = (rows(a) == cols(a))
 
 ################################################################################
 #
@@ -179,7 +177,7 @@ function transpose(a::nmod_mat)
 end
 
 function transpose!(a::nmod_mat)
-  !issquare(a) && error("Matrix must be a square matrix")
+  _check_is_square(a)
   ccall((:nmod_mat_transpose, :libflint), Void,
           (Ptr{nmod_mat}, Ptr{nmod_mat}), &a, &a)
 end
@@ -273,6 +271,7 @@ end
 ################################################################################
 
 function ^(x::nmod_mat, y::UInt)
+  _check_is_square(x)
   z = parent(x)()
   ccall((:nmod_mat_pow, :libflint), Void,
           (Ptr{nmod_mat}, Ptr{nmod_mat}, UInt), &z, &x, y)
@@ -356,7 +355,7 @@ end
 ################################################################################
 
 function trace(a::nmod_mat)
-  !issquare(a) && error("Matrix must be a square matrix")
+  _check_is_square(a)
   r = ccall((:nmod_mat_trace, :libflint), UInt, (Ptr{nmod_mat}, ), &a)
   return base_ring(a)(r)
 end
@@ -368,7 +367,7 @@ end
 ################################################################################
 
 function det(a::nmod_mat)
-  !issquare(a) && error("Matrix must be a square matrix")
+  _check_is_square(a)
   if is_prime(a.n)
      r = ccall((:nmod_mat_det, :libflint), UInt, (Ptr{nmod_mat}, ), &a)
      return base_ring(a)(r)
@@ -399,7 +398,7 @@ end
 ################################################################################
 
 function inv(a::nmod_mat)
-  !issquare(a) && error("Matrix must be a square matrix")
+  _check_is_square(a)
   z = parent(a)()
   r = ccall((:nmod_mat_inv, :libflint), Int,
           (Ptr{nmod_mat}, Ptr{nmod_mat}), &z, &a)
@@ -415,7 +414,7 @@ end
 
 function solve(x::nmod_mat, y::nmod_mat)
   (base_ring(x) != base_ring(y)) && error("Matrices must have same base ring")
-  !issquare(x)&& error("First argument not a square matrix in solve")
+  _check_is_square(x)
   (y.r != x.r) || y.c != 1 && ("Not a column vector in solve")
   z = parent(y)()
   r = ccall((:nmod_mat_solve, :libflint), Int,
@@ -566,6 +565,7 @@ end
 ################################################################################
 
 function charpoly(R::NmodPolyRing, a::nmod_mat)
+  _check_is_square(a)
   m = deepcopy(a)
   p = R()
   ccall((:nmod_mat_charpoly, :libflint), Void,
@@ -580,6 +580,7 @@ end
 ################################################################################
 
 function minpoly(R::NmodPolyRing, a::nmod_mat)
+  _check_is_square(a)
   p = R()
   ccall((:nmod_mat_minpoly, :libflint), Void,
           (Ptr{nmod_poly}, Ptr{nmod_mat}), &p, &a)

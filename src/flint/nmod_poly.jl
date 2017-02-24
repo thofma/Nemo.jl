@@ -843,7 +843,7 @@ end
 ################################################################################
 
 function det(M::GenMat{nmod_poly})
-   rows(M) != cols(M) && error("Not a square matrix in det")
+   _check_is_square(M)
    try
       return det_fflu(M)
    catch
