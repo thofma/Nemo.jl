@@ -1963,6 +1963,18 @@ end
 #
 ###############################################################################
 
+function zero!{T <: RingElem}(c::GenPoly{T})
+   c.coeffs = Array{T,1}(0)
+   c.length = 0
+   nothing
+end
+
+function one!{T <: RingElem}(c::GenPoly{T})
+   c.coeffs = [one(base_ring(parent(c)))]
+   c.length = 1
+   nothing
+end
+
 function fit!{T <: RingElem}(c::GenPoly{T}, n::Int)
    if length(c.coeffs) < n
       t = c.coeffs
@@ -1974,11 +1986,6 @@ function fit!{T <: RingElem}(c::GenPoly{T}, n::Int)
          c.coeffs[i] = zero(base_ring(c))
       end
    end
-   nothing
-end
-
-function zero!{T <: RingElem}(c::GenPoly{T})
-   c.length = 0
    nothing
 end
 

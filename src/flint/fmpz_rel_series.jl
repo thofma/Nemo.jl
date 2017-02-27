@@ -538,6 +538,15 @@ function zero!(x::fmpz_rel_series)
   ccall((:fmpz_poly_zero, :libflint), Void, 
                    (Ptr{fmpz_rel_series},), &x)
   x.prec = parent(x).prec_max
+  nothing
+end
+
+function one!(x::fmpz_rel_series)
+  ccall((:fmpz_poly_one, :libflint), Void, 
+                   (Ptr{fmpz_rel_series},), &x)
+  x.prec = parent(x).prec_max
+  x.val = 0
+  nothing
 end
 
 function setcoeff!(z::fmpz_rel_series, n::Int, x::fmpz)

@@ -234,6 +234,22 @@ function test_fmpz_rel_series_adhoc_binary_ops()
    println("PASS")
 end
 
+function test_fmpz_rel_series_unsafe_ops()
+   print("fmpz_rel_series.unsafe_ops...")
+
+   R, x = PowerSeriesRing(ZZ, 30, "x")
+
+   a = x
+
+   zero!(a)
+   @test iszero(a)
+
+   one!(a)
+   @test isone(a)
+
+   println("PASS")
+end
+
 function test_fmpz_rel_series_comparison()
    print("fmpz_rel_series.comparison...")
 
@@ -404,6 +420,7 @@ function test_fmpz_rel_series()
    test_fmpz_rel_series_unary_ops()
    test_fmpz_rel_series_binary_ops()
    test_fmpz_rel_series_adhoc_binary_ops()
+   test_fmpz_rel_series_unsafe_ops()
    test_fmpz_rel_series_comparison()
    test_fmpz_rel_series_adhoc_comparison()
    test_fmpz_rel_series_powering()

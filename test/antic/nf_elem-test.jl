@@ -219,6 +219,23 @@ function test_nf_elem_powering()
    println("PASS")
 end
 
+function test_nf_elem_unsafe_ops()
+   print("nf_elem.unsafe_ops...")
+
+   R, x = PolynomialRing(QQ, "x")
+   K, a = NumberField(x^3 + 3x + 1, "a")
+
+   b = a^2 +1
+
+   zero!(b)
+   @test iszero(b)
+
+   one!(b)
+   @test isone(b)
+
+   println("PASS")
+end
+
 function test_nf_elem_comparison()
    print("nf_elem.comparison...")
  
@@ -338,6 +355,7 @@ function test_nf_elem()
    test_nf_elem_binary_ops()
    test_nf_elem_adhoc_binary()
    test_nf_elem_powering()
+   test_nf_elem_unsafe_ops()
    test_nf_elem_comparison()
    test_nf_elem_adhoc_comparison()
    test_nf_elem_inversion()

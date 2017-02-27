@@ -119,6 +119,22 @@ function test_fmpz_poly_adhoc_binary()
    println("PASS")
 end
 
+function test_fmpz_poly_unsafe_ops()
+   print("fmpz_poly.unsafe_ops...")
+
+   R, x = PolynomialRing(ZZ, "x")
+
+   f = x
+
+   zero!(f)
+   @test iszero(f)
+
+   one!(f)
+   @test isone(f)
+
+   println("PASS")
+end
+
 function test_fmpz_poly_comparison()
    print("fmpz_poly.comparison...")
 
@@ -456,6 +472,7 @@ function test_fmpz_poly()
    test_fmpz_poly_manipulation()
    test_fmpz_poly_binary_ops()
    test_fmpz_poly_adhoc_binary()
+   test_fmpz_poly_unsafe_ops()
    test_fmpz_poly_comparison()
    test_fmpz_poly_adhoc_comparison()
    test_fmpz_poly_unary_ops()

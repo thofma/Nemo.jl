@@ -595,6 +595,12 @@ function zero!(a::nf_elem)
    nothing
 end
 
+function one!(a::nf_elem)
+   ccall((:nf_elem_one, :libflint), Void,
+         (Ptr{nf_elem}, Ptr{AnticNumberField}), &a, &parent(a))
+   nothing
+end
+
 function mul!(z::nf_elem, x::nf_elem, y::nf_elem)
    ccall((:nf_elem_mul, :libflint), Void,
          (Ptr{nf_elem}, Ptr{nf_elem}, Ptr{nf_elem}, Ptr{AnticNumberField}),

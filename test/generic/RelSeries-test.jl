@@ -135,6 +135,23 @@ function test_rel_series_adhoc_binary_ops()
    println("PASS")
 end
 
+function test_rel_series_unsafe_ops()
+   print("GenRelSeries.unsafe_ops...")
+ 
+   R, t = PolynomialRing(QQ, "t")
+   S, x = PowerSeriesRing(R, 30, "x")
+
+   a = x^3
+
+   zero!(a)
+   @test iszero(a)
+
+   one!(a)
+   @test isone(a)
+
+   println("PASS")
+end
+
 function test_rel_series_comparison()
    print("GenRelSeries.comparison...")
 
@@ -333,6 +350,7 @@ function test_gen_rel_series()
    test_rel_series_unary_ops()
    test_rel_series_binary_ops()
    test_rel_series_adhoc_binary_ops()
+   test_rel_series_unsafe_ops()
    test_rel_series_comparison()
    test_rel_series_adhoc_comparison()
    test_rel_series_powering()

@@ -585,6 +585,18 @@ end
 #
 ################################################################################
 
+function zero!(z::acb_mat)
+   ccall((:acb_mat_zero, :libarb), Void, 
+                    (Ptr{acb_mat}, ), &z)
+   nothing
+end
+
+function one!(z::acb_mat)
+   ccall((:acb_mat_one, :libarb), Void, 
+                    (Ptr{acb_mat}, ), &z)
+   nothing
+end
+
 for (s,f) in (("add!","acb_mat_add"), ("mul!","acb_mat_mul"),
               ("sub!","acb_mat_sub"))
   @eval begin

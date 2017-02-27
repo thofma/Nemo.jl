@@ -160,6 +160,23 @@ function test_fq_poly_adhoc_binary()
    println("PASS")
 end
 
+function test_fq_poly_unsafe_ops()
+   print("fq_poly.unsafe_ops...")
+
+   R, x = FiniteField(fmpz(23), 5, "x")
+   S, y = PolynomialRing(R, "y") 
+
+   f = y
+
+   zero!(f)
+   @test iszero(f)
+
+   one!(f)
+   @test isone(f)
+
+   println("PASS")
+end
+
 function test_fq_poly_comparison()
    print("fq_poly.comparison...")
 
@@ -519,6 +536,7 @@ function test_fq_poly()
    test_fq_poly_manipulation()
    test_fq_poly_binary_ops()
    test_fq_poly_adhoc_binary()
+   test_fq_poly_unsafe_ops()
    test_fq_poly_comparison()
    test_fq_poly_adhoc_comparison()
    test_fq_poly_unary_ops()

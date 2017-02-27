@@ -680,6 +680,20 @@ end
 #
 ###############################################################################
 
+function zero!(z::fmpq_abs_series)
+   ccall((:fmpq_poly_zero, :libflint), Void, 
+                (Ptr{fmpq_abs_series},), &z)
+   z.prec = parent(z).prec_max
+   nothing
+end
+
+function one!(z::fmpq_abs_series)
+   ccall((:fmpq_poly_one, :libflint), Void, 
+                (Ptr{fmpq_abs_series},), &z)
+   z.prec = parent(z).prec_max
+   nothing
+end
+
 function setcoeff!(z::fmpq_abs_series, n::Int, x::fmpq)
    ccall((:fmpq_poly_set_coeff_fmpq, :libflint), Void, 
                 (Ptr{fmpq_abs_series}, Int, Ptr{fmpq}), 

@@ -159,6 +159,23 @@ function test_fmpz_mod_poly_adhoc_binary()
    println("PASS")
 end
 
+function test_fmpz_mod_poly_unsafe_ops()
+   print("fmpz_mod_poly.unsafe_ops...")
+
+   R = ResidueRing(ZZ, 123456789012345678949)
+   S, x = PolynomialRing(R, "x")
+
+   f = x
+
+   zero!(f)
+   @test iszero(f)
+
+   one!(f)
+   @test isone(f)
+
+   println("PASS")
+end
+
 function test_fmpz_mod_poly_comparison()
    print("fmpz_mod_poly.comparison...")
 
@@ -538,6 +555,7 @@ function test_fmpz_mod_poly()
    test_fmpz_mod_poly_manipulation()
    test_fmpz_mod_poly_binary_ops()
    test_fmpz_mod_poly_adhoc_binary()
+   test_fmpz_mod_poly_unsafe_ops()
    test_fmpz_mod_poly_comparison()
    test_fmpz_mod_poly_adhoc_comparison()
    test_fmpz_mod_poly_unary_ops()

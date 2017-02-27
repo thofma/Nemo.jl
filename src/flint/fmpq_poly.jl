@@ -659,6 +659,11 @@ function zero!(z::fmpq_poly)
                     (Ptr{fmpq_poly},), &z)
 end
 
+function one!(z::fmpq_poly)
+   ccall((:fmpq_poly_one, :libflint), Void, 
+                    (Ptr{fmpq_poly},), &z)
+end
+
 function fit!(z::fmpq_poly, n::Int)
    ccall((:fmpq_poly_fit_length, :libflint), Void, 
                     (Ptr{fmpq_poly}, Int), &z, n)

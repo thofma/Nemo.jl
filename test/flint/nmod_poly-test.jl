@@ -221,6 +221,23 @@ function test_nmod_poly_powering()
   println("PASS")
 end
 
+function test_nmod_poly_unsafe_ops()
+  print("nmod_poly.unsafe_ops...")
+
+  R = ResidueRing(ZZ, 23)
+  Rx, x = PolynomialRing(R, "x")
+
+  f = x
+
+  zero!(f)
+  @test iszero(f)
+
+  one!(f)
+  @test isone(f)
+
+  println("PASS")
+end
+
 function test_nmod_poly_comparison()
   print("nmod_poly.comparison...")
 
@@ -703,6 +720,7 @@ function test_nmod_poly()
   test_nmod_poly_binary_ops()
   test_nmod_poly_adhoc_binary()
   test_nmod_poly_powering()
+  test_nmod_poly_unsafe_ops()
   test_nmod_poly_comparison()
   test_nmod_poly_adhoc_comparison()
   test_nmod_poly_truncation()

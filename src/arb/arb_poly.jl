@@ -696,6 +696,12 @@ function zero!(z::arb_poly)
    nothing
 end
 
+function one!(z::arb_poly)
+   ccall((:arb_poly_one, :libarb), Void, 
+                    (Ptr{arb_poly}, ), &z)
+   nothing
+end
+
 function fit!(z::arb_poly, n::Int)
    ccall((:arb_poly_fit_length, :libarb), Void, 
                     (Ptr{arb_poly}, Int), &z, n)

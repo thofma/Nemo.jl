@@ -135,6 +135,22 @@ function test_padic_adhoc_binary()
    println("PASS")
 end
 
+function test_padic_unsafe_ops()
+   print("padic.unsafe_ops()...")
+
+   R = PadicField(7, 30)
+
+   a = R(2)
+
+   zero!(a)
+   @test iszero(a)
+
+   one!(a)
+   @test isone(a)
+
+   println("PASS")
+end
+
 function test_padic_comparison()
    print("padic.comparison()...")  
 
@@ -329,6 +345,7 @@ function test_padic()
    test_padic_unary_ops()
    test_padic_binary_ops()
    test_padic_adhoc_binary()
+   test_padic_unsafe_ops()
    test_padic_comparison()
    test_padic_adhoc_comparison()
    test_padic_powering()

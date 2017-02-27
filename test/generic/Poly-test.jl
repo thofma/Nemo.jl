@@ -120,6 +120,23 @@ function test_gen_poly_adhoc_binary()
    println("PASS")
 end
 
+function test_gen_poly_unsafe_ops()
+   print("GenPoly.unsafe_ops...")
+
+   R, x = PolynomialRing(ZZ, "x")
+   S, y = PolynomialRing(R, "y")
+
+   f = x*y^2 + (x + 1)*y + 3
+
+   zero!(f)
+   @test iszero(f)
+
+   one!(f)
+   @test isone(f)
+
+   println("PASS")
+end
+
 function test_gen_poly_comparison()
    print("GenPoly.comparison...")
 
@@ -545,6 +562,7 @@ function test_gen_poly()
    test_gen_poly_manipulation()
    test_gen_poly_binary_ops()
    test_gen_poly_adhoc_binary()
+   test_gen_poly_unsafe_ops()
    test_gen_poly_comparison()
    test_gen_poly_adhoc_comparison()
    test_gen_poly_unary_ops()

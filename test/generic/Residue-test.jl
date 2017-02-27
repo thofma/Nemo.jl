@@ -164,6 +164,22 @@ function test_gen_res_adhoc_binary()
    println("PASS")
 end
 
+function test_gen_res_unsafe_ops()
+   print("GenRes.unsafe_ops...")
+
+   R = ResidueRing(ZZ, 7)
+
+   a = R(4)
+
+   zero!(a)
+   @test iszero(a)
+
+   one!(a)
+   @test isone(a)
+
+   println("PASS")
+end
+
 function test_gen_res_comparison()
    print("GenRes.comparison...")
  
@@ -282,6 +298,7 @@ function test_gen_res()
    test_gen_res_binary_ops()
    test_gen_res_gcd()
    test_gen_res_adhoc_binary()
+   test_gen_res_unsafe_ops()
    test_gen_res_comparison()
    test_gen_res_adhoc_comparison()
    test_gen_res_powering()

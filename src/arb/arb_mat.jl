@@ -548,6 +548,18 @@ end
 #
 ################################################################################
 
+function zero!(z::arb_mat)
+   ccall((:arb_mat_zero, :libarb), Void, 
+                    (Ptr{arb_mat}, ), &z)
+   nothing
+end
+
+function one!(z::arb_mat)
+   ccall((:arb_mat_one, :libarb), Void, 
+                    (Ptr{arb_mat}, ), &z)
+   nothing
+end
+
 for (s,f) in (("add!","arb_mat_add"), ("mul!","arb_mat_mul"),
               ("sub!","arb_mat_sub"))
   @eval begin

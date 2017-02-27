@@ -313,6 +313,24 @@ function test_nmod_mat_adhoc_binary()
   println("PASS")
 end
 
+function test_nmod_mat_unsafe_ops()
+   print("nmod_mat.unsafe_ops...")
+
+   Z17 = ResidueRing(ZZ,17)
+
+   S = MatrixSpace(Z17, 2, 2)
+
+   A = S([1 2 ; 3 4])
+
+   zero!(A)
+   @test iszero(A)
+
+   one!(A)
+   @test isone(A)
+
+   println("PASS")
+end
+
 function test_nmod_mat_comparison()
   print("nmod_mat.comparison...")
 
@@ -709,6 +727,7 @@ function test_nmod_mat()
   test_nmod_mat_unary_ops()
   test_nmod_mat_binary_ops()
   test_nmod_mat_adhoc_binary()
+  test_nmod_mat_unsafe_ops()
   test_nmod_mat_comparison()
   test_nmod_mat_adhoc_comparison()
   test_nmod_mat_powering()

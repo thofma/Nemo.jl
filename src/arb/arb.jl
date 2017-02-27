@@ -1636,6 +1636,11 @@ function zero!(z::arb)
    nothing
 end
 
+function one!(z::arb)
+   ccall((:arb_one, :libarb), Void, (Ptr{arb},), &z)
+   nothing
+end
+
 for (s,f) in (("add!","arb_add"), ("mul!","arb_mul"), ("div!", "arb_div"),
               ("sub!","arb_sub"))
   @eval begin

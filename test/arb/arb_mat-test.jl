@@ -178,6 +178,22 @@ function test_arb_mat_adhoc_binary()
    println("PASS")
 end
 
+function test_arb_mat_unsafe_ops()
+   print("arb_mat.unsafe_ops...")
+
+   S = MatrixSpace(RR, 2, 2)
+
+   A = S([fmpz(1) 2; 3 4])
+
+   zero!(A)
+   @test iszero(A)
+
+   one!(A)
+   @test isone(A)
+
+   println("PASS")
+end
+
 function test_arb_mat_shifting()
    print("arb_mat.shifting...")
 
@@ -442,6 +458,7 @@ function test_arb_mat()
    test_arb_mat_transpose()
    test_arb_mat_binary_ops()
    test_arb_mat_adhoc_binary()
+   test_arb_mat_unsafe_ops()
    test_arb_mat_shifting()
    test_arb_mat_comparison()
    test_arb_mat_adhoc_comparison()

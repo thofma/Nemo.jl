@@ -112,6 +112,23 @@ function test_gen_frac_adhoc_binary()
    println("PASS")
 end
 
+function test_gen_frac_unsafe_ops()
+   print("GenFrac.unsafe_ops...")
+
+   S, x = PolynomialRing(ZZ, "x")
+   T = FractionField(S)
+
+   a = 2*x
+
+   zero!(a)
+   @test iszero(a)
+
+   one!(a)
+   @test isone(a)
+
+   println("PASS")
+end
+
 function test_gen_frac_comparison()
    print("GenFrac.comparison...")
 
@@ -218,6 +235,7 @@ function test_gen_frac()
    test_gen_frac_unary_ops()
    test_gen_frac_binary_ops()
    test_gen_frac_adhoc_binary()
+   test_gen_frac_unsafe_ops()
    test_gen_frac_comparison()
    test_gen_frac_adhoc_comparison()
    test_gen_frac_powering()

@@ -119,6 +119,22 @@ function test_fmpq_mat_adhoc_binary()
    println("PASS")
 end
 
+function test_fmpq_mat_unsafe_ops()
+   print("fmpq_mat.unsafe_ops...")
+
+   S = MatrixSpace(QQ, 2, 2)
+
+   A = S([fmpq(1) 2 ; 3 4])
+
+   zero!(A)
+   @test iszero(A)
+
+   one!(A)
+   @test isone(A)
+
+   println("PASS")
+end
+
 function test_fmpq_mat_comparison()
    print("fmpq_mat.comparison...")
 
@@ -447,6 +463,7 @@ function test_fmpq_mat()
    test_fmpq_mat_unary_ops()
    test_fmpq_mat_binary_ops()
    test_fmpq_mat_adhoc_binary()
+   test_fmpq_mat_unsafe_ops()
    test_fmpq_mat_comparison()
    test_fmpq_mat_adhoc_comparison()
    test_fmpq_mat_powering()

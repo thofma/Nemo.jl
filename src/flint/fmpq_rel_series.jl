@@ -875,6 +875,15 @@ function zero!(z::fmpq_rel_series)
    ccall((:fmpq_poly_zero, :libflint), Void, 
                 (Ptr{fmpq_rel_series},), &z)
    z.prec = parent(z).prec_max
+   nothing
+end
+
+function one!(z::fmpq_rel_series)
+   ccall((:fmpq_poly_one, :libflint), Void, 
+                (Ptr{fmpq_rel_series},), &z)
+   z.prec = parent(z).prec_max
+   z.val = 0
+   nothing
 end
 
 function setcoeff!(z::fmpq_rel_series, n::Int, x::fmpq)

@@ -2130,6 +2130,21 @@ end
 #
 ###############################################################################
 
+function zero!{T <: RingElem, S, N}(a::GenMPoly{T, S, N})
+   a.coeffs = Array{T,1}(0)
+   a.exps = similar(a.exps, 0)
+   a.length = 0
+   nothing
+end
+
+function one!{T <: RingElem, S, N}(a::GenMPoly{T, S, N})
+   a.coeffs = [one(base_ring(parent(a)))]
+   a.exps = similar(a.exps, 0)
+   push!(a.exps, tuple(zeros(UInt, parent(a).num_vars)...))
+   a.length = 1
+   nothing
+end
+
 function mul!{T <: RingElem, S, N}(a::GenMPoly{T, S, N}, b::GenMPoly{T, S, N}, c::GenMPoly{T, S, N})
    t = b*c
    a.coeffs = t.coeffs
@@ -2151,10 +2166,6 @@ function fit!{T <: RingElem, S, N}(a::GenMPoly{T, S, N}, n::Int)
       resize!(a.coeffs, n)
       resize!(a.exps, n)
    end
-end
-
-function zero!{T <: RingElem, S, N}(a::GenMPoly{T, S, N})
-   a.length = 0
 end
 
 ###############################################################################

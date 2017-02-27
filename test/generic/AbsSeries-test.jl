@@ -139,6 +139,23 @@ function test_abs_series_adhoc_binary_ops()
    println("PASS")
 end
 
+function test_abs_series_unsafe_ops()
+   print("GenAbsSeries.unsafe_ops...")
+ 
+   R, t = PolynomialRing(QQ, "t")
+   S, x = PowerSeriesRing(R, 30, "x", model=:capped_absolute)
+
+   a = x^3
+
+   zero!(a)
+   @test iszero(a)
+
+   one!(a)
+   @test isone(a)
+
+   println("PASS")
+end
+
 function test_abs_series_comparison()
    print("GenAbsSeries.comparison...")
 
@@ -337,6 +354,7 @@ function test_gen_abs_series()
    test_abs_series_unary_ops()
    test_abs_series_binary_ops()
    test_abs_series_adhoc_binary_ops()
+   test_abs_series_unsafe_ops()
    test_abs_series_comparison()
    test_abs_series_adhoc_comparison()
    test_abs_series_powering()

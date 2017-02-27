@@ -123,6 +123,23 @@ function test_fmpz_mod_abs_series_adhoc_binary_ops()
    println("PASS")
 end
 
+function test_fmpz_mod_abs_series_unsafe_ops()
+   println("fmpz_mod_abs_series.unsafe_ops...")
+
+   S = ResidueRing(ZZ, 123456789012345678949)
+   R, x = PowerSeriesRing(S, 30, "x", model=:capped_absolute)
+
+   a = x
+
+   zero!(a)
+   @test iszero(a)
+
+   one!(a)
+   @test isone(a)
+
+   println("PASS")
+end
+
 function test_fmpz_mod_abs_series_comparison()
    print("fmpz_mod_abs_series.comparison...")
 
@@ -302,6 +319,7 @@ function test_fmpz_mod_abs_series()
    test_fmpz_mod_abs_series_unary_ops()
    test_fmpz_mod_abs_series_binary_ops()
    test_fmpz_mod_abs_series_adhoc_binary_ops()
+   test_fmpz_mod_abs_series_unsafe_ops()
    test_fmpz_mod_abs_series_comparison()
    test_fmpz_mod_abs_series_adhoc_comparison()
    test_fmpz_mod_abs_series_powering()

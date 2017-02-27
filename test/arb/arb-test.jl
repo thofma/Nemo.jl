@@ -362,6 +362,12 @@ function test_arb_unsafe_ops()
    div!(z, y, x)
    @test z == 1.5
 
+   zero!(z)
+   @test iszero(z)
+
+   one!(z)
+   @test isone(z)
+
    println("PASS")
 end
 

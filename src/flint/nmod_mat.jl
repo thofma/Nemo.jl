@@ -518,6 +518,22 @@ function vcat(x::nmod_mat, y::nmod_mat)
   return z
 end
 
+###############################################################################
+#
+#   Unsafe functions
+#
+###############################################################################
+
+function zero!(z::nmod_mat)
+   ccall((:nmod_mat_zero, :libflint), Void,
+                (Ptr{nmod_mat},), &z)
+end
+
+function one!(z::nmod_mat)
+   ccall((:nmod_mat_one, :libflint), Void,
+                (Ptr{nmod_mat},), &z)
+end
+
 ################################################################################
 #
 #  Conversion
@@ -733,4 +749,3 @@ function MatrixSpace(R::GenResRing{fmpz}, r::Int, c::Int)
     return GenMatSpace{T}(R, r, c)
   end
 end
-

@@ -160,6 +160,22 @@ function test_fmpq_poly_adhoc_binary()
    println("PASS")
 end
 
+function test_fmpq_poly_unsafe_ops()
+   print("fmpq_poly.unsafe_ops...")
+
+   S, y = PolynomialRing(QQ, "y")
+
+   f = y
+
+   zero!(f)
+   @test iszero(f)
+
+   one!(f)
+   @test isone(f)
+
+   println("PASS")
+end
+
 function test_fmpq_poly_comparison()
    print("fmpq_poly.comparison...")
 
@@ -495,6 +511,7 @@ function test_fmpq_poly()
    test_fmpq_poly_manipulation()
    test_fmpq_poly_binary_ops()
    test_fmpq_poly_adhoc_binary()
+   test_fmpq_poly_unsafe_ops()
    test_fmpq_poly_comparison()
    test_fmpq_poly_adhoc_comparison()
    test_fmpq_poly_unary_ops()

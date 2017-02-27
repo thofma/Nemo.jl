@@ -668,6 +668,11 @@ function zero!(c::fmpq)
          (Ptr{fmpq},), &c)
 end
 
+function one!(c::fmpq)
+   ccall((:fmpq_one, :libflint), Void,
+         (Ptr{fmpq},), &c)
+end
+
 function mul!(c::fmpq, a::fmpq, b::fmpq)
    ccall((:fmpq_mul, :libflint), Void,
          (Ptr{fmpq}, Ptr{fmpq}, Ptr{fmpq}), &c, &a, &b)

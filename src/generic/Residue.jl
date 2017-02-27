@@ -485,6 +485,11 @@ function zero!{T <: RingElem}(a::ResElem{T})
    nothing
 end
 
+function one!{T <: RingElem}(a::ResElem{T})
+   one!(a.data)
+   nothing
+end
+
 function mul!{T <: RingElem}(c::ResElem{T}, a::ResElem{T}, b::ResElem{T})
    c.data = mod(data(a)*data(b), modulus(a))
    nothing

@@ -1001,6 +1001,16 @@ end
 #
 ###############################################################################
 
+function zero!(z::fmpz_mat)
+   ccall((:fmpz_mat_zero, :libflint), Void,
+                (Ptr{fmpz_mat},), &z)
+end
+
+function one!(z::fmpz_mat)
+   ccall((:fmpz_mat_one, :libflint), Void,
+                (Ptr{fmpz_mat},), &z)
+end
+
 function mul!(z::fmpz_mat, x::fmpz_mat, y::fmpz_mat)
    ccall((:fmpz_mat_mul, :libflint), Void,
                 (Ptr{fmpz_mat}, Ptr{fmpz_mat}, Ptr{fmpz_mat}), &z, &x, &y)
@@ -1033,11 +1043,6 @@ end
 function addeq!(z::fmpz_mat, x::fmpz_mat)
    ccall((:fmpz_mat_add, :libflint), Void,
                 (Ptr{fmpz_mat}, Ptr{fmpz_mat}, Ptr{fmpz_mat}), &z, &z, &x)
-end
-
-function zero!(z::fmpz_mat)
-   ccall((:fmpz_mat_zero, :libflint), Void,
-                (Ptr{fmpz_mat},), &z)
 end
 
 ###############################################################################

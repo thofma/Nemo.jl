@@ -37,7 +37,7 @@ one(R::GenSparsePolyRing) = R(1)
 
 zero(R::GenSparsePolyRing) = R(0)
  
-iszero(x::GenSparsePoly) = length(x) = 0
+iszero(x::GenSparsePoly) = length(x) == 0
 
 isone(x::GenSparsePoly) = x == 1
 
@@ -1690,6 +1690,20 @@ end
 #
 ###############################################################################
 
+function zero!{T <: RingElem}(a::GenSparsePoly{T})
+   a.coeffs = Array{T,1}(0)
+   a.exps = Array{UInt,1}(0)
+   a.length = 0
+   nothing
+end
+
+function one!{T <: RingElem}(a::GenSparsePoly{T})
+   a.coeffs = [one(base_ring(parent(a)))]
+   a.exps = [UInt(0)]
+   a.length = 1
+   nothing
+end
+
 function fit!{T <: RingElem}(a::GenSparsePoly{T}, n::Int)
    if length(a.coeffs) < n
       resize!(a.coeffs, n)
@@ -1728,11 +1742,6 @@ function add!{T <: RingElem}(a::GenSparsePoly{T}, b::GenSparsePoly{T}, c::GenSpa
    a.coeffs = t.coeffs
    a.exps = t.exps
    a.length = t.length
-   return
-end
-
-function zero!{T <: RingElem}(a::GenSparsePoly{T})
-   a.length = 0
    return
 end
 

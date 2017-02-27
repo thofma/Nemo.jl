@@ -811,6 +811,11 @@ function zero!(z::acb_poly)
    nothing
 end
 
+function one!(z::acb_poly)
+   ccall((:acb_poly_one, :libarb), Void, (Ptr{acb_poly},), &z)
+   nothing
+end
+
 function fit!(z::acb_poly, n::Int)
    ccall((:acb_poly_fit_length, :libarb), Void, 
                     (Ptr{acb_poly}, Int), &z, n)

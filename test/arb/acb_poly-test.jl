@@ -158,6 +158,22 @@ function test_acb_poly_adhoc_binary()
    println("PASS")
 end
 
+function test_acb_poly_unsafe_ops()
+   print("acb_poly.unsafe_ops...")
+
+   R, x = PolynomialRing(CC, "x")
+
+   f = x
+
+   zero!(f)
+   @test iszero(f)
+
+   one!(f)
+   @test isone(f)
+
+   println("PASS")
+end
+
 function test_acb_poly_comparison()
    print("acb_poly.comparison...")
 
@@ -461,6 +477,7 @@ function test_acb_poly()
    test_acb_poly_manipulation()
    test_acb_poly_binary_ops()
    test_acb_poly_adhoc_binary()
+   test_acb_poly_unsafe_ops()
    test_acb_poly_comparison()
    test_acb_poly_adhoc_comparison()
    test_acb_poly_unary_ops()

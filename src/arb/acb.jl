@@ -1373,6 +1373,11 @@ function zero!(z::acb)
    nothing
 end
 
+function one!(z::acb)
+   ccall((:acb_one, :libarb), Void, (Ptr{acb},), &z)
+   nothing
+end
+
 function add!(z::acb, x::acb, y::acb)
   ccall((:acb_add, :libarb), Void, (Ptr{acb}, Ptr{acb}, Ptr{acb}, Int),
          &z, &x, &y, parent(z).prec)

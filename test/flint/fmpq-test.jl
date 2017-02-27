@@ -148,6 +148,20 @@ function test_fmpq_adhoc_binary()
    println("PASS")
 end
 
+function test_fmpq_unsafe_ops()
+   print("fmpq.unsafe_ops()...")
+
+   a = fmpq(2)
+
+   zero!(a)
+   @test iszero(a)
+
+   one!(a)
+   @test isone(a)
+
+   println("PASS")
+end
+
 function test_fmpq_comparison()
    print("fmpq.comparison()...")
 
@@ -339,6 +353,7 @@ function test_fmpq()
    test_fmpq_unary_ops()
    test_fmpq_binary_ops()
    test_fmpq_adhoc_binary()
+   test_fmpq_unsafe_ops()
    test_fmpq_comparison()
    test_fmpq_adhoc_comparison()
    test_fmpq_shifting()

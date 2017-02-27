@@ -1028,8 +1028,19 @@ end
 ###############################################################################
 
 function zero!{T <: RingElem}(a::GenRelSeries{T})
+   a.coeffs = Array{T,1}(0)
    a.length = 0
    a.prec = parent(a).prec_max
+   a.val = parent(a).prec_max
+   nothing
+end
+
+function one!{T <: RingElem}(a::GenRelSeries{T})
+   a.coeffs = [one(base_ring(parent(a)))]
+   a.length = 1
+   a.prec = parent(a).prec_max
+   a.val = 0
+   nothing
 end
 
 function fit!{T <: RingElem}(c::GenRelSeries{T}, n::Int)

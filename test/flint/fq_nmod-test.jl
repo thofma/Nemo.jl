@@ -134,6 +134,22 @@ function test_fq_nmod_powering()
    println("PASS")
 end
 
+function test_fq_nmod_unsafe_ops()
+   print("fq_nmod.unsafe_ops()...")
+
+   R, x = FiniteField(7, 5, "x")
+
+   a = x^3 + 3x
+
+   zero!(a)
+   @test iszero(a)
+
+   one!(a)
+   @test isone(a)
+
+   println("PASS")
+end
+
 function test_fq_nmod_comparison()
    print("fq_nmod.comparison()...")
   
@@ -223,6 +239,7 @@ function test_fq_nmod()
    test_fq_nmod_binary_ops()
    test_fq_nmod_adhoc_binary()
    test_fq_nmod_powering()
+   test_fq_nmod_unsafe_ops()
    test_fq_nmod_comparison()
    test_fq_nmod_inversion()
    test_fq_nmod_exact_division()

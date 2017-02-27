@@ -258,6 +258,20 @@ function test_fmpz_powering()
    println("PASS")
 end
 
+function test_fmpz_unsafe_ops()
+   print("fmpz.unsafe_ops...")
+
+   a = fmpz(2)
+
+   zero!(a)
+   @test iszero(a)
+
+   one!(a)
+   @test isone(a)
+
+   println("PASS")
+end
+
 function test_fmpz_comparison()
    print("fmpz.comparison...")
 
@@ -570,6 +584,7 @@ function test_fmpz()
    test_fmpz_adhoc_division()
    test_fmpz_shift()
    test_fmpz_powering()
+   test_fmpz_unsafe_ops()
    test_fmpz_comparison()
    test_fmpz_adhoc_comparison()
    test_fmpz_unary_ops()

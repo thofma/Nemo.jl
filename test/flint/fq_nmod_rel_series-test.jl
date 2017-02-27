@@ -264,6 +264,23 @@ function test_fq_nmod_rel_series_adhoc_binary_ops()
    println("PASS")
 end
 
+function test_fq_nmod_rel_series_unsafe_ops()
+   print("fq_nmod_rel_series.unsafe_ops...")
+
+   R, t = FiniteField(23, 5, "t")
+   S, x = PowerSeriesRing(R, 30, "x")
+
+   a = x
+
+   zero!(a)
+   @test iszero(a)
+
+   one!(a)
+   @test isone(a)
+
+   println("PASS")
+end
+
 function test_fq_nmod_rel_series_comparison()
    print("fq_nmod_rel_series.comparison...")
 
@@ -462,6 +479,7 @@ function test_fq_nmod_rel_series()
    test_fq_nmod_rel_series_unary_ops()
    test_fq_nmod_rel_series_binary_ops()
    test_fq_nmod_rel_series_adhoc_binary_ops()
+   test_fq_nmod_rel_series_unsafe_ops()
    test_fq_nmod_rel_series_comparison()
    test_fq_nmod_rel_series_adhoc_comparison()
    test_fq_nmod_rel_series_powering()

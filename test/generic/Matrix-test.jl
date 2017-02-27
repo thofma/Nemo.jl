@@ -300,6 +300,23 @@ function test_gen_mat_permutation()
    println("PASS")
 end
 
+function test_gen_mat_unsafe_ops()
+   print("GenMat.unsafe_ops...")
+
+   R, t = PolynomialRing(QQ, "t")
+   S = MatrixSpace(R, 2, 2)
+
+   A = S([ t t^2; R(1) t])
+
+   zero!(A)
+   @test iszero(A)
+
+   one!(A)
+   @test isone(A)
+
+   println("PASS")
+end
+
 function test_gen_mat_comparison()
    print("GenMat.comparison...")
 
@@ -1159,6 +1176,7 @@ function test_gen_mat()
    test_gen_mat_binary_ops()
    test_gen_mat_adhoc_binary()
    test_gen_mat_permutation()
+   test_gen_mat_unsafe_ops()
    test_gen_mat_comparison()
    test_gen_mat_adhoc_comparison()
    test_gen_mat_powering()

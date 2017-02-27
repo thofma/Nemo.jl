@@ -113,6 +113,22 @@ function test_fmpz_mat_adhoc_binary()
    println("PASS")
 end
 
+function test_fmpz_mat_unsafe_ops()
+   print("fmpz_mat.unsafe_ops...")
+
+   S = MatrixSpace(ZZ, 2, 2)
+
+   A = S([fmpz(1) 2 ; 3 4])
+
+   zero!(A)
+   @test iszero(A)
+
+   one!(A)
+   @test isone(A)
+
+   println("PASS")
+end
+
 function test_fmpz_mat_comparison()
    print("fmpz_mat.comparison...")
 
@@ -515,6 +531,7 @@ function test_fmpz_mat()
    test_fmpz_mat_unary_ops()
    test_fmpz_mat_binary_ops()
    test_fmpz_mat_adhoc_binary()
+   test_fmpz_mat_unsafe_ops()
    test_fmpz_mat_comparison()
    test_fmpz_mat_adhoc_comparison()
    test_fmpz_mat_powering()

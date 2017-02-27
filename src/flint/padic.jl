@@ -565,6 +565,13 @@ function zero!(z::padic)
          (Ptr{padic}, Ptr{FlintPadicField}), &z, &ctx)
 end
 
+function one!(z::padic)
+   z.N = parent(z).prec_max
+   ctx = parent(z)
+   ccall((:padic_one, :libflint), Void, 
+         (Ptr{padic}, Ptr{FlintPadicField}), &z, &ctx)
+end
+
 function mul!(z::padic, x::padic, y::padic)
    z.N = min(x.N + y.v, y.N + x.v)
    ctx = parent(x)

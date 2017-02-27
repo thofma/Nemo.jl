@@ -134,6 +134,22 @@ function test_fq_powering()
    println("PASS")
 end
 
+function test_fq_unsafe_ops()
+   print("fq.unsafe_ops()...")
+
+   R, x = FiniteField(fmpz(7), 5, "x")
+
+   a = x^3 + 3x
+
+   zero!(a)
+   @test iszero(a)
+
+   one!(a)
+   @test isone(a)
+
+   println("PASS")
+end
+
 function test_fq_comparison()
    print("fq.comparison()...")
   
@@ -223,6 +239,7 @@ function test_fq()
    test_fq_binary_ops()
    test_fq_adhoc_binary()
    test_fq_powering()
+   test_fq_unsafe_ops()
    test_fq_comparison()
    test_fq_inversion()
    test_fq_exact_division()

@@ -510,6 +510,15 @@ function zero!(x::fq_nmod_rel_series)
   ccall((:fq_nmod_poly_zero, :libflint), Void, 
                    (Ptr{fq_nmod_rel_series}, Ptr{FqNmodFiniteField}), &x, &base_ring(x))
   x.prec = parent(x).prec_max
+  nothing
+end
+
+function one!(x::fq_nmod_rel_series)
+  ccall((:fq_nmod_poly_one, :libflint), Void, 
+                   (Ptr{fq_nmod_rel_series}, Ptr{FqNmodFiniteField}), &x, &base_ring(x))
+  x.prec = parent(x).prec_max
+  x.val = 0
+  nothing
 end
 
 function fit!(z::fq_nmod_rel_series, n::Int)

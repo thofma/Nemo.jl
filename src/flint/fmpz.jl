@@ -1372,6 +1372,18 @@ end
 #
 ###############################################################################
 
+function zero!(z::fmpz)
+   ccall((:fmpz_zero, :libflint), Void, 
+         (Ptr{fmpz},), &z)
+   return
+end
+
+function one!(z::fmpz)
+   ccall((:fmpz_one, :libflint), Void, 
+         (Ptr{fmpz},), &z)
+   return
+end
+
 function mul!(z::fmpz, x::fmpz, y::fmpz)
    ccall((:fmpz_mul, :libflint), Void, 
          (Ptr{fmpz}, Ptr{fmpz}, Ptr{fmpz}), &z, &x, &y)
@@ -1393,12 +1405,6 @@ end
 function add!(z::fmpz, x::fmpz, y::fmpz)
    ccall((:fmpz_add, :libflint), Void, 
          (Ptr{fmpz}, Ptr{fmpz}, Ptr{fmpz}), &z, &x, &y)
-   return
-end
-
-function zero!(z::fmpz)
-   ccall((:fmpz_zero, :libflint), Void, 
-         (Ptr{fmpz},), &z)
    return
 end
 

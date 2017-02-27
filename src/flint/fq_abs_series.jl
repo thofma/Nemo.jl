@@ -448,6 +448,20 @@ end
 #
 ###############################################################################
 
+function zero!(x::fq_abs_series)
+  ccall((:fq_poly_zero, :libflint), Void, 
+                   (Ptr{fq_abs_series}, Ptr{FqFiniteField}), &x, &base_ring(x))
+  x.prec = parent(x).prec_max
+  nothing
+end
+
+function one!(x::fq_abs_series)
+  ccall((:fq_poly_one, :libflint), Void, 
+                   (Ptr{fq_abs_series}, Ptr{FqFiniteField}), &x, &base_ring(x))
+  x.prec = parent(x).prec_max
+  nothing
+end
+
 function fit!(z::fq_abs_series, n::Int)
    ccall((:fq_poly_fit_length, :libflint), Void, 
          (Ptr{fq_abs_series}, Int, Ptr{FqFiniteField}),

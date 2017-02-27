@@ -834,6 +834,20 @@ end
 #
 ###############################################################################
 
+function zero!{T <: RingElem}(c::GenAbsSeries{T})
+   c.coeffs = Array{T,1}(0)
+   c.length = 0
+   c.prec = parent(c).prec_max
+   nothing
+end
+
+function one!{T <: RingElem}(c::GenAbsSeries{T})
+   c.coeffs = [one(base_ring(parent(c)))]
+   c.length = 1
+   c.prec = parent(c).prec_max
+   nothing
+end
+
 function fit!{T <: RingElem}(c::GenAbsSeries{T}, n::Int)
    if length(c.coeffs) < n
       t = c.coeffs

@@ -610,6 +610,13 @@ function zero!(x::fmpz_mod_rel_series)
   ccall((:fmpz_mod_poly_zero, :libflint), Void, 
                    (Ptr{fmpz_mod_rel_series},), &x)
   x.prec = parent(x).prec_max
+  nothing
+end
+
+function one!(x::fmpz_mod_rel_series)
+  zero!(x)
+  x.val = 0
+  setcoeff!(x, 0, ZZ(1))
 end
 
 function fit!(x::fmpz_mod_rel_series, n::Int)

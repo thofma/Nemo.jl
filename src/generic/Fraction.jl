@@ -684,6 +684,14 @@ function zero!{T <: RingElem}(c::FracElem{T})
    nothing
 end
 
+function one!{T <: RingElem}(c::FracElem{T})
+   one!(c.num)
+   if !isone(c.den)
+      c.den = one(parent(c))
+   end
+   nothing
+end
+
 function mul!{T <: RingElem}(c::FracElem{T}, a::FracElem{T}, b::FracElem{T})
    g1 = gcd(num(a), den(b))
    g2 = gcd(num(b), den(a))

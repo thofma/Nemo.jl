@@ -459,6 +459,11 @@ function zero!(z::fq)
         (Ptr{fq}, Ptr{FqFiniteField}), &z, &z.parent)
 end
 
+function one!(z::fq)
+   ccall((:fq_one, :libflint), Void, 
+        (Ptr{fq}, Ptr{FqFiniteField}), &z, &z.parent)
+end
+
 function mul!(z::fq, x::fq, y::fq)
    ccall((:fq_mul, :libflint), Void, 
         (Ptr{fq}, Ptr{fq}, Ptr{fq}, Ptr{FqFiniteField}), &z, &x, &y, &y.parent)

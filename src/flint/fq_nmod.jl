@@ -381,6 +381,11 @@ function zero!(z::fq_nmod)
         (Ptr{fq_nmod}, Ptr{FqNmodFiniteField}), &z, &z.parent)
 end
 
+function one!(z::fq_nmod)
+   ccall((:fq_nmod_one, :libflint), Void, 
+        (Ptr{fq_nmod}, Ptr{FqNmodFiniteField}), &z, &z.parent)
+end
+
 function mul!(z::fq_nmod, x::fq_nmod, y::fq_nmod)
    ccall((:fq_nmod_mul, :libflint), Void, 
          (Ptr{fq_nmod}, Ptr{fq_nmod}, Ptr{fq_nmod}, Ptr{FqNmodFiniteField}), 

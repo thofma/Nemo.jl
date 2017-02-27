@@ -791,6 +791,11 @@ function zero!(x::fmpz_mod_poly)
                    (Ptr{fmpz_mod_poly}, ), &x)
 end
 
+function one!(x::fmpz_mod_poly)
+  zero!(x)
+  setcoeff!(x, 0, ZZ(1))
+end
+
 function fit!(x::fmpz_mod_poly, n::Int)
   ccall((:fmpz_mod_poly_fit_length, :libflint), Void, 
                    (Ptr{fmpz_mod_poly}, Int), &x, n)
