@@ -1,3 +1,5 @@
+include("Z35Z-RelSeries.jl")
+
 function test_rel_series_constructors()
    print("GenRelSeries.constructors...")
 
@@ -29,6 +31,30 @@ function test_rel_series_constructors()
    l = S(t)
 
    @test isa(l, GenRelSeries)
+
+   U, u = PowerSeriesRing(Z35Z(), 30, "u")
+
+   @test isa(U, GenRelSeriesRing)
+
+   a = u^3 + 2u + 1
+   b = u^2 + 3u + O(u^4)
+
+   @test isa(a, GenRelSeries)
+   @test isa(b, GenRelSeries)
+
+   c = U(a)
+   d = U(map(Z35Z(),[1, 3, 1]), 3, 5, 0)
+
+   @test isa(c, GenRelSeries)
+   @test isa(d, GenRelSeries)
+
+   g = U(1)
+   h = U(fmpz(2))
+   k = U()
+
+   @test isa(g, GenRelSeries)
+   @test isa(h, GenRelSeries)
+   @test isa(k, GenRelSeries)
 
    println("PASS")
 end
@@ -70,6 +96,39 @@ function test_rel_series_manipulation()
 
    @test coeff(b, 7) == 0
 
+   U, u = PowerSeriesRing(Z35Z(), 30, "u")
+
+   @test max_precision(U) == 30
+
+   a = 2u + u^3
+   b = O(u^4)
+
+   @test isgen(gen(U))
+
+   @test iszero(zero(U))
+
+   @test isone(one(U))
+
+   @test isunit(-1 + u + 2u^2)
+
+   @test valuation(a) == 1
+
+   @test valuation(b) == 4
+
+   @test precision(a) == 31
+
+   @test precision(b) == 4
+
+   @test isequal(deepcopy(a), a)
+
+   @test isequal(deepcopy(b), b)
+
+   @test normalise(a, 3) == 3
+
+   @test coeff(a, 1) == 2
+
+   @test coeff(b, 7) == 0
+
    println("PASS")
 end
 
@@ -85,6 +144,15 @@ function test_rel_series_unary_ops()
    @test isequal(-a, -2x - x^3 + O(x^31))
    
    @test isequal(-b, -1 - 2x - x^2 + O(x^3))
+
+   U, u = PowerSeriesRing(Z35Z(), 30, "u")
+
+   a = 2u + u^3
+   b = 1 + 2u + u^2 + O(u^3)
+
+   @test isequal(-a, -2u - u^3 + O(u^31))
+   
+   @test isequal(-b, -1 - 2u - u^2 + O(u^3))
 
    println("PASS")
 end
@@ -110,6 +178,23 @@ function test_rel_series_binary_ops()
 
    @test isequal(a*d, -x^7+3*x^6-x^5+6*x^4+2*x^3+O(x^33))
 
+   U, u = PowerSeriesRing(Z35Z(), 30, "u")
+
+   a = 2u + u^3
+   b = O(u^4)
+   c = 1 + u + 3u^2 + O(u^5)
+   d = u^2 + 3u^3 - u^4
+
+   @test isequal(a + b, u^3+2*u+O(u^4))
+
+   @test isequal(a - c, u^3-3*u^2+u-1+O(u^5))
+
+   @test isequal(b*c, O(u^4))
+
+   @test isequal(a*c, 3*u^5+u^4+7*u^3+2*u^2+2*u+O(u^6))
+
+   @test isequal(a*d, -u^7+3*u^6-u^5+6*u^4+2*u^3+O(u^33))
+
    println("PASS")
 end
 
@@ -132,6 +217,21 @@ function test_rel_series_adhoc_binary_ops()
 
    @test isequal(d*fmpz(3), 3x^2 + 9x^3 - 3x^4 + O(x^32))
 
+   U, u = PowerSeriesRing(Z35Z(), 30, "u")
+
+   a = 2u + u^3
+   b = O(u^4)
+   c = 1 + u + 3u^2 + O(u^5)
+   d = u^2 + 3u^3 - u^4
+
+   @test isequal(2a, 4u + 2u^3 + O(u^31))
+
+   @test isequal(fmpz(3)*b, O(u^4))
+
+   @test isequal(c*2, 2 + 2*u + 6*u^2 + O(u^5))
+
+   @test isequal(d*fmpz(3), 3u^2 + 9u^3 - 3u^4 + O(u^32))
+
    println("PASS")
 end
 
@@ -142,6 +242,16 @@ function test_rel_series_unsafe_ops()
    S, x = PowerSeriesRing(R, 30, "x")
 
    a = x^3
+
+   zero!(a)
+   @test iszero(a)
+
+   one!(a)
+   @test isone(a)
+
+   U, u = PowerSeriesRing(Z35Z(), 30, "u")
+
+   a = u^3
 
    zero!(a)
    @test iszero(a)
@@ -173,6 +283,23 @@ function test_rel_series_comparison()
 
    @test !isequal(b, d)
 
+   U, u = PowerSeriesRing(Z35Z(), 30, "u")
+
+   a = 2u + u^3
+   b = O(u^3)
+   c = 1 + u + 3u^2 + O(u^5)
+   d = 3u^3 - u^4
+
+   @test a == 2u + u^3
+
+   @test b == d
+
+   @test c != d
+
+   @test isequal(a, 2u + u^3 + O(u^31))
+
+   @test !isequal(b, d)
+
    println("PASS")
 end
 
@@ -186,6 +313,23 @@ function test_rel_series_adhoc_comparison()
    b = O(x^0)
    c = 1 + O(x^5)
    d = S(3)
+
+   @test d == 3
+
+   @test c == fmpz(1)
+
+   @test fmpz() != a
+
+   @test 2 == b
+
+   @test fmpz(1) == c
+
+   U, u = PowerSeriesRing(Z35Z(), 30, "u")
+
+   a = 2u + u^3
+   b = O(u^0)
+   c = 1 + O(u^5)
+   d = U(3)
 
    @test d == 3
 
@@ -219,6 +363,18 @@ function test_rel_series_powering()
 
    @test isequal(d^12, 4096*x^12+24576*x^14+O(x^15))
 
+   U, u = PowerSeriesRing(Z35Z(), 30, "u")
+
+   a = 2u + u^3
+   b = O(u^4)
+   c = 1 + u + 2u^2 + O(u^5)
+   d = 2u + u^3 + O(u^4)
+
+   @test isequal(a^12, u^12+6u^14+34u^16+10u^18+20u^20+16u^22+21u^24+4u^26+10u^28+10u^30+19u^32+24u^34+u^36+O(u^42))
+   @test isequal(b^12, O(u^48))
+   @test isequal(c^12, 1+12u+20u^2+29u^3+14u^4+O(u^5))
+   @test isequal(d^12, u^12+6u^14+O(u^15))
+
    println("PASS")
 end
 
@@ -240,6 +396,21 @@ function test_rel_series_shift()
    @test isequal(shift_right(c, 1), 1+2*x+O(x^4))
 
    @test isequal(shift_right(d, 3), 1+O(x^1))
+
+   U, u = PowerSeriesRing(Z35Z(), 30, "u")
+
+   a = 2u + u^3
+   b = O(u^4)
+   c = 1 + u + 2u^2 + O(u^5)
+   d = 2u + u^3 + O(u^4)
+
+   @test isequal(shift_left(a, 2), 2*u^3+u^5+O(u^33))
+
+   @test isequal(shift_left(b, 2), O(u^6))
+
+   @test isequal(shift_right(c, 1), 1+2*u+O(u^4))
+
+   @test isequal(shift_right(d, 3), 1+O(u^1))
 
    println("PASS")
 end
@@ -263,6 +434,21 @@ function test_rel_series_truncation()
 
    @test isequal(truncate(d, 5), x^3+2*x+O(x^4))
 
+   U, u = PowerSeriesRing(Z35Z(), 30, "u")
+
+   a = 2u + u^3
+   b = O(u^4)
+   c = 1 + u + 2u^2 + O(u^5)
+   d = 2u + u^3 + O(u^4)
+
+   @test isequal(truncate(a, 3), 2*u + O(u^3))
+
+   @test isequal(truncate(b, 2), O(u^2))
+
+   @test isequal(truncate(c, 5), 2*u^2+u+1+O(u^5))
+
+   @test isequal(truncate(d, 5), u^3+2*u+O(u^4))
+
    println("PASS")
 end
 
@@ -278,6 +464,15 @@ function test_rel_series_inversion()
    @test isequal(inv(a), -x^4+3*x^3-x^2-x+1+O(x^5))
 
    @test isequal(inv(b), -1+O(x^30))
+
+   U, u = PowerSeriesRing(Z35Z(), 30, "u")
+
+   a = 1 + u + 2u^2 + O(u^5)
+   b = U(-1)
+
+   @test isequal(inv(a), -u^4+3*u^3-u^2-u+1+O(u^5))
+
+   @test isequal(inv(b), -1+O(u^30))
 
    println("PASS")
 end
@@ -300,6 +495,21 @@ function test_rel_series_exact_division()
    @test isequal(divexact(b, c), O(x^4))
 
    @test isequal(divexact(d, c), -2*x^5+2*x^4-x^2+x+O(x^6))
+
+   U, u = PowerSeriesRing(Z35Z(), 30, "u")
+
+   a = u + u^3
+   b = O(u^4)
+   c = 1 + u + 2u^2 + O(u^5)
+   d = u + u^3 + O(u^6)
+
+   @test isequal(divexact(a, d), 1+O(u^5))
+
+   @test isequal(divexact(d, a), 1+O(u^5))
+
+   @test isequal(divexact(b, c), O(u^4))
+
+   @test isequal(divexact(d, c), -2*u^5+2*u^4-u^2+u+O(u^6))
 
    println("PASS")
 end
@@ -326,6 +536,23 @@ function test_rel_series_adhoc_exact_division()
    @test isequal(divexact(94872394861923874346987123694871329847a, 94872394861923874346987123694871329847), a)
 
    @test isequal(divexact((t + 1)*a, t + 1), a)
+
+   U, u = PowerSeriesRing(Z35Z(), 30, "u")
+
+   a = u + u^3
+   b = O(u^4)
+   c = 1 + u + 2u^2 + O(u^5)
+   d = u + u^3 + O(u^6)
+
+   @test isequal(divexact(a, 4), 9u+9u^3+O(u^31))
+
+   @test isequal(divexact(b, fmpz(11)), 0+O(u^4))
+
+   @test isequal(divexact(c, fmpz(2)), 18+18u+u^2+O(u^5))
+
+   @test isequal(divexact(d, 9), 4u+4u^3+O(u^6))
+
+   @test isequal(divexact(29a, 29), a)
 
    println("PASS")
 end

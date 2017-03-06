@@ -1,3 +1,5 @@
+include("Z35Z-Poly.jl")
+
 function test_gen_poly_constructors()
    print("GenPoly.constructors...")
  
@@ -46,6 +48,20 @@ function test_gen_poly_constructors()
 
    @test isa(l, PolyElem)
 
+   U, u = PolynomialRing(Z35Z(), "u")
+
+   @test typeof(U) <: GenPolyRing
+
+   @test isa(u, PolyElem)
+
+   f = u^2 + 1
+
+   @test isa(f, PolyElem)
+
+   g = U(2)
+
+   @test isa(f, PolyElem)
+
    println("PASS")
 end
 
@@ -79,6 +95,32 @@ function test_gen_poly_manipulation()
 
    @test deepcopy(h) == h
 
+   U, u = PolynomialRing(Z35Z(), "u")
+
+   @test iszero(zero(U))
+   
+   @test isone(one(U))
+
+   @test isgen(gen(U))
+   
+   @test isunit(one(U))
+
+   f = 4*u^2 + 1
+
+   @test lead(f) == U(4)
+
+   @test degree(f) == 2
+
+   h = 2*u^2 + 4*u + 3
+
+   @test coeff(h, 2) == 2
+
+   @test length(h) == 3
+
+   @test canonical_unit(-u^2+1) == -1
+
+   @test deepcopy(h) == h
+
    println("PASS")
 end
 
@@ -96,6 +138,17 @@ function test_gen_poly_binary_ops()
    @test f + g == x*y^2+(2*x+2)*y+(x^3+2*x+5)
 
    @test f*g == (x^2+x)*y^3+(x^4+3*x^2+4*x+1)*y^2+(x^4+x^3+2*x^2+7*x+5)*y+(3*x^3+6*x+6)
+
+   U, u = PolynomialRing(Z35Z(), "u")
+
+   f = u^3 + u^2 + u + 3
+   g = u^3 + u^2 + 3u + 2
+   
+   @test f - g == -2u+1
+
+   @test f + g == 2u^3+2u^2+4u+5
+
+   @test f*g == u^6+2u^5+5u^4+9u^3+8u^2+11u+6 
 
    println("PASS")
 end
@@ -117,6 +170,19 @@ function test_gen_poly_adhoc_binary()
 
    @test g*fmpz(3) == (3*x+3)*y+(3*x^3+6*x+6)
 
+   U, u = PolynomialRing(Z35Z(), "u")
+
+   f = u^3 + u^2 + u + 3
+   g = u^3 + u^2 + 3u + 2
+
+   @test f*4 == 4u^3+4u^2+4u+12
+
+   @test 7*f == 7u^3+7u^2+7u+21
+   
+   @test fmpz(5)*g == 5u^3+5u^2+15u+10
+
+   @test g*fmpz(3) == 3u^3+3u^2+9u+6
+
    println("PASS")
 end
 
@@ -127,6 +193,16 @@ function test_gen_poly_unsafe_ops()
    S, y = PolynomialRing(R, "y")
 
    f = x*y^2 + (x + 1)*y + 3
+
+   zero!(f)
+   @test iszero(f)
+
+   one!(f)
+   @test isone(f)
+
+   U, u = PolynomialRing(Z35Z(), "u")
+
+   f = u^3+4
 
    zero!(f)
    @test iszero(f)
@@ -150,6 +226,15 @@ function test_gen_poly_comparison()
 
    @test isequal(f, g)
 
+   U, u = PolynomialRing(Z35Z(), "u")
+
+   f = u^3+u^2+3
+   g = u^3+u^2+3
+
+   @test f == g
+
+   @test isequal(f, g)
+
    println("PASS")
 end
 
@@ -163,6 +248,12 @@ function test_gen_poly_adhoc_comparison()
 
    @test 1 != x + y
 
+   U, u = PolynomialRing(Z35Z(), "u")
+
+   @test U(1) == 1 
+
+   @test 1 != 2u
+
    println("PASS")
 end
 
@@ -175,6 +266,12 @@ function test_gen_poly_unary_ops()
    f = x*y^2 + (x + 1)*y + 3
 
    @test -f == -x*y^2 - (x + 1)*y - 3
+
+   U, u = PolynomialRing(Z35Z(), "u")
+
+   f = u^3 + 3u - 1
+
+   @test -f == -u^3-3u+1
 
    println("PASS")
 end
@@ -192,6 +289,15 @@ function test_gen_poly_truncation()
 
    @test mullow(f, g, 4) == (x^2+x)*y^3+(x^4+3*x^2+4*x+1)*y^2+(x^4+x^3+2*x^2+7*x+5)*y+(3*x^3+6*x+6)
 
+   U, u = PolynomialRing(Z35Z(), "u")
+
+   f = u^3 + u^2 + u + 3
+   g = u^3 + u^2 + 3u + 2
+
+   @test truncate(f, 1) == 3
+
+   @test mullow(f, g, 4) == 9u^3+8u^2+11u+6
+
    println("PASS")
 end
 
@@ -204,6 +310,12 @@ function test_gen_poly_reverse()
    f = x*y^2 + (x + 1)*y + 3
 
    @test reverse(f, 7) == 3y^6 + (x + 1)*y^5 + x*y^4
+
+   U, u = PolynomialRing(Z35Z(), "u")
+
+   f = u^3 + 2u^2 + u + 3
+
+   @test reverse(f, 7) == 3u^6 + u^5 + 2u^4 + u^3
 
    println("PASS")
 end
@@ -219,6 +331,14 @@ function test_gen_poly_shift()
    @test shift_left(f, 7) == x*y^9 + (x + 1)*y^8 + 3y^7
 
    @test shift_right(f, 3) == 0
+
+   U, u = PolynomialRing(Z35Z(), "u")
+
+   f = u^3 + 2u^2 + u + 3
+
+   @test shift_left(f, 7) == u^10 + 2u^9 + u^8 + 3u^7
+
+   @test shift_right(f, 4) == 0
 
    println("PASS")
 end
@@ -236,6 +356,16 @@ function test_gen_poly_powering()
    g = shift_left(f, 3)
 
    @test g^5 == y^15*f^5
+
+   U, u = PolynomialRing(Z35Z(), "u")
+
+   f = 2u^2 + u + 3
+
+   @test f^5 == 32*u^10+10*u^9+5*u^8+30*u^7+5*u^6+11*u^5+25*u^4+15*u^3+30*u^2+20*u+33 
+
+   g = shift_left(f, 3)
+
+   @test g^5 == u^15*f^5
 
    println("PASS")
 end
@@ -256,7 +386,7 @@ function test_gen_poly_modular_arithmetic()
    @test mulmod(f, g, h) == (-30*x^2 - 43*x - 9)*y^3+(-7*x^2 - 23*x - 7)*y^2+(4*x^2 - 10*x - 3)*y+(x^2 - 2*x)
    
    @test powmod(f, 3, h) == (69*x^2 + 243*x + 79)*y^3+(78*x^2 + 180*x + 63)*y^2+(27*x^2 + 42*x + 18)*y+(3*x^2 + 3*x + 2)
-   
+
    println("PASS")
 end
 
@@ -268,6 +398,13 @@ function test_gen_poly_exact_division()
 
    f = x*y^2 + (x + 1)*y + 3
    g = (x + 1)*y + (x^3 + 2x + 2)
+
+   @test divexact(f*g, f) == g
+
+   U, u = PolynomialRing(Z35Z(), "u")
+
+   f = u^3 + u^2 + u + 3
+   g = u^3 + u^2 + 3u + 2
 
    @test divexact(f*g, f) == g
 
@@ -285,6 +422,14 @@ function test_gen_poly_adhoc_exact_division()
    @test divexact(3*f, 3) == f
 
    @test divexact(x*f, x) == f
+
+   U, u = PolynomialRing(Z35Z(), "u")
+
+   f = u^3 + u^2 + u + 3
+
+   @test divexact(3*f, 3) == f
+
+   @test divexact(u*f, u) == f
 
    println("PASS")
 end
@@ -320,6 +465,15 @@ function test_gen_poly_pseudodivision()
 
    @test pseudodivrem(k, l) == ((x^2+x)*y+(-x^4-x^2+1), (x^7+3*x^5+2*x^4+x^3+5*x^2+4*x+1))
 
+   U, u = PolynomialRing(Z35Z(), "u")
+
+   f = u^3 + u^2 + u + 3
+   g = u^3 + u^2 + 3u + 2
+
+   @test pseudorem(f, g) == 33u+1
+
+   @test pseudodivrem(f, g) == (1, 33u+1)
+
    println("PASS")
 end
 
@@ -350,6 +504,14 @@ function test_gen_poly_content_primpart_gcd()
 
    @test gcdinv(r, s) == (1,fmpz(-21)//62*z^4+fmpz(13)//62*z^3-fmpz(11)//62*z^2-fmpz(5)//62*z+fmpz(9)//62)
 
+   U, u = PolynomialRing(Z35Z(), "u")
+
+   k = u^3 + u^2 + u + 3
+
+   @test content(k) == 1
+
+   @test primpart(k*(u^2 + 1)) == u^5+u^4+2*u^3+4*u^2+u+3
+
    println("PASS")
 end
 
@@ -368,6 +530,16 @@ function test_gen_poly_evaluation()
 
    @test evaluate(g, f) == x^5+4*x^4+7*x^3+7*x^2+4*x+4
 
+   U, u = PolynomialRing(Z35Z(), "u")
+
+   g = u^3 + u^2 + 3u + 2
+
+   @test evaluate(g, 3) == 12
+
+   @test evaluate(g, fmpz(3)) == 12
+
+   @test evaluate(g, Z35Z()(3)) == 12 
+
    println("PASS")
 end
 
@@ -382,6 +554,13 @@ function test_gen_poly_composition()
 
    @test compose(f, g) == (x^3+2*x^2+x)*y^2+(2*x^5+2*x^4+4*x^3+9*x^2+6*x+1)*y+(x^7+4*x^5+5*x^4+5*x^3+10*x^2+8*x+5)
 
+   U, u = PolynomialRing(Z35Z(), "u")
+
+   f = u^3 + u^2 + u + 3
+   g = u^3 + u^2 + 3u + 2
+
+   @test compose(f, g) == u^9+3u^8+12u^7+26u^6+15u^5+6u^4+16u^3+10u^2+16u+17
+
    println("PASS")
 end
 
@@ -394,6 +573,12 @@ function test_gen_poly_derivative()
    h = x*y^2 + (x + 1)*y + 3
 
    @test derivative(h) == 2x*y + x + 1
+
+   U, u = PolynomialRing(Z35Z(), "u")
+
+   f = u^3 + u^2 + u + 3
+
+   @test derivative(f) == 3u^2+2u+1
 
    println("PASS")
 end
@@ -468,6 +653,17 @@ function test_gen_poly_newton_representation()
 
    @test f == g
 
+   U, u = PolynomialRing(Z35Z(), "u")
+
+   f = u^3 + u^2 + u + 3
+
+   g = deepcopy(f)
+   roots = [Z35Z()(1), Z35Z()(2), Z35Z()(3)]
+   monomial_to_newton!(g.coeffs, roots)
+   newton_to_monomial!(g.coeffs, roots)
+
+   @test f == g
+
    println("PASS")
 end
 
@@ -484,6 +680,15 @@ function test_gen_poly_interpolation()
 
    @test f == y^2
 
+   U, u = PolynomialRing(Z35Z(), "u")
+
+   xs = [Z35Z()(1), Z35Z()(2), Z35Z()(3), Z35Z()(4)]
+   ys = [Z35Z()(1), Z35Z()(4), Z35Z()(9), Z35Z()(16)]
+
+   f = interpolate(U, xs, ys)
+
+   @test f == u^2
+
    println("PASS")
 end
 
@@ -497,6 +702,12 @@ function test_gen_poly_special()
 
    @test chebyshev_u(15, y) == 32768*y^15-114688*y^13+159744*y^11-112640*y^9+42240*y^7-8064*y^5+672*y^3-16*y
 
+   U, u = PolynomialRing(Z35Z(), "u")
+
+   @test chebyshev_t(20, u) == 23u^20+25u^18+30u^16+10u^14+7u^10+5u^8+10u^6+20u^4+10u^2+1
+
+   @test chebyshev_u(15, u) == 8u^15+7u^13+4u^11+25u^9+30u^7+21u^5+7u^3+19u
+
    println("PASS")
 end
 
@@ -509,6 +720,13 @@ function test_gen_poly_mul_karatsuba()
    
    f = x + y + 2z^2 + 1
    
+   @test mul_karatsuba(f^10, f^10) == mul_classical(f^10, f^10)
+   @test mul_karatsuba(f^10, f^30) == mul_classical(f^10, f^30)
+
+   U, u = PolynomialRing(Z35Z(), "u")
+
+   f = u^3 + u^2 + u + 3
+
    @test mul_karatsuba(f^10, f^10) == mul_classical(f^10, f^10)
    @test mul_karatsuba(f^10, f^30) == mul_classical(f^10, f^30)
 
@@ -526,6 +744,13 @@ function test_gen_poly_mul_ks()
    
    @test mul_ks(f^10, f^10) == mul_classical(f^10, f^10)
    @test mul_ks(f^10, f^30) == mul_classical(f^10, f^30)
+
+   U, u = PolynomialRing(Z35Z(), "u")
+
+   f = u^3 + u^2 + u + 3
+
+   @test mul_karatsuba(f^10, f^10) == mul_classical(f^10, f^10)
+   @test mul_karatsuba(f^10, f^30) == mul_classical(f^10, f^30)
 
    println("PASS")
 end
@@ -553,6 +778,19 @@ function test_gen_poly_generic_eval()
    f = x^5 + 3x^3 + 2x^2 + x + 1
 
    @test f(T(13)) == 20
+
+   U, u = PolynomialRing(Z35Z(), "u")
+
+   f = u^3 + u^2 + u + 3
+   g = u^3 + u^2 + 3u + 2
+
+   @test f(g) == u^9+3u^8+12u^7+26u^6+15u^5+6u^4+16u^3+10u^2+16u+17
+
+   @test f(u + 1) == u^3+4u^2+6u+6 
+
+   @test f(123) == 17
+
+   @test f(fmpz(123)) == 17
 
    println("PASS")
 end

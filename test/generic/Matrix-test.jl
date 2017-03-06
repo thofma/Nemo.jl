@@ -1,3 +1,5 @@
+include("Z35Z-Mat.jl")
+
 function randpoly(S, d::Int, n::Int)
    r = S()
    x = gen(S)
@@ -200,10 +202,39 @@ function test_gen_mat_constructors()
 
    @test isa(m, MatElem)
    
-   @test_throws ErrorConstrDimMismatch S([t t^2 ; t^3 t^4])
-   @test_throws ErrorConstrDimMismatch S([t t^2 t^3 ; t^4 t^5 t^6 ; t^7 t^8 t^9 ; t t^2 t^3])
-   @test_throws ErrorConstrDimMismatch S([t, t^2])
-   @test_throws ErrorConstrDimMismatch S([t, t^2, t^3, t^4, t^5, t^6, t^7, t^8, t^9, t^10]) 
+   @test_throws MatConstrError S([t t^2 ; t^3 t^4])
+   @test_throws MatConstrError S([t t^2 t^3 ; t^4 t^5 t^6 ; t^7 t^8 t^9 ; t t^2 t^3])
+   @test_throws MatConstrError S([t, t^2])
+   @test_throws MatConstrError S([t, t^2, t^3, t^4, t^5, t^6, t^7, t^8, t^9, t^10])
+
+   U = MatrixSpace(Z35Z(), 3, 3)
+
+   @test typeof(U) <: GenMatSpace
+
+   f = U(Z35Z()(4))
+
+   @test isa(f, MatElem)
+
+   g = U(4)
+
+   @test isa(g, MatElem)
+
+   h = U(fmpz(4))
+
+   @test isa(h,MatElem)
+
+   k = U(map(Z35Z(),[1 2 3; 4 5 6; 7 8 9]))
+
+   @test isa(k, MatElem)
+
+   l = U(k)
+
+   @test isa(l, MatElem)
+
+   m = U()
+
+   @test isa(m, MatElem)
+
    println("PASS")
 end
 
@@ -228,6 +259,22 @@ function test_gen_mat_manipulation()
 
    @test deepcopy(A) == A
 
+   U = MatrixSpace(Z35Z(), 3, 3)
+
+   C = U(map(Z35Z(), [1 2 3; 4 5 6; 7 8 9]))
+
+   @test iszero(zero(U))
+   @test isone(one(U))
+
+   C[1, 1] = Z35Z()(3)
+
+   @test C[1, 1] == Z35Z()(3)
+
+   @test rows(C) == 3
+   @test cols(C) == 3
+
+   @test deepcopy(C) == C
+
    println("PASS")
 end
 
@@ -239,6 +286,14 @@ function test_gen_mat_unary_ops()
 
    A = S([t + 1 t R(1); t^2 t t; R(-2) t + 2 t^2 + t + 1])
    B = S([-t - 1 (-t) -R(1); -t^2 (-t) (-t); -R(-2) (-t - 2) (-t^2 - t - 1)])
+
+   @test -A == B
+
+   U = MatrixSpace(Z35Z(), 3, 3)
+
+   A = U(map(Z35Z(), [1 2 3; 4 5 6; 7 8 9]))
+
+   B = U(map(Z35Z(), [-1 -2 -3; -4 -5 -6; -7 -8 -9]))
 
    @test -A == B
 
@@ -259,6 +314,18 @@ function test_gen_mat_binary_ops()
    @test A - B == S([t-1 t-3 R(0); t^2 - t R(-1) R(-2); R(-1) (-t^2 + t + 2) (-t^3 + t^2 + t + 1)])
 
    @test A*B == S([t^2 + 2*t + 1 2*t^2 + 4*t + 3 t^3 + t^2 + 3*t + 1; 3*t^2 - t (t^3 + 4*t^2 + t) t^4 + 2*t^2 + 2*t; t-5 t^4 + t^3 + 2*t^2 + 3*t - 4 t^5 + 1*t^4 + t^3 + t^2 + 4*t + 2])
+
+   U = MatrixSpace(Z35Z(), 3, 3)
+
+   A = U(map(Z35Z(), [1 2 3; 4 5 6; 7 8 9]))
+
+   B = U(map(Z35Z(), [3 5 9; 1 26 34; 24 29 19]))
+
+   @test A + B == U(map(Z35Z(), [4 7 12; 5 31 5; 31 2 28]))
+
+   @test A - B == U(map(Z35Z(), [-2 -3 -6; 3 -21 -28; -17 -21 -10]))
+
+   @test A * B == U(map(Z35Z(), [7 4 29; 21 9 5; 0 14 16]))
 
    println("PASS")
 end
@@ -281,6 +348,17 @@ function test_gen_mat_adhoc_binary()
    @test fmpz(3)*A == A*fmpz(3)
    @test (t - 1)*A == A*(t - 1)
 
+   U = MatrixSpace(Z35Z(), 3, 3)
+
+   A = U(map(Z35Z(), [1 2 3; 4 5 6; 7 8 9]))
+
+   @test 12 + A == A + 12
+   @test fmpz(11) + A == A + fmpz(11)
+   @test A - 3 == -(3 - A)
+   @test A - fmpz(7) == -(fmpz(7) - A)
+   @test 3*A == A*3
+   @test fmpz(3)*A == A*fmpz(3)
+
    println("PASS")
 end
 
@@ -297,6 +375,12 @@ function test_gen_mat_permutation()
 
    @test A == inv(P)*(P*A)
 
+   U = MatrixSpace(Z35Z(), 3, 3)
+
+   A = U(map(Z35Z(), [1 2 3; 4 5 6; 7 8 9]))
+
+   @test A == inv(P)*(P*A)
+
    println("PASS")
 end
 
@@ -307,6 +391,16 @@ function test_gen_mat_unsafe_ops()
    S = MatrixSpace(R, 2, 2)
 
    A = S([ t t^2; R(1) t])
+
+   zero!(A)
+   @test iszero(A)
+
+   one!(A)
+   @test isone(A)
+
+   U = MatrixSpace(Z35Z(), 3, 3)
+
+   A = U(map(Z35Z(), [1 2 3; 4 5 6; 7 8 9]))
 
    zero!(A)
    @test iszero(A)
@@ -330,6 +424,16 @@ function test_gen_mat_comparison()
 
    @test A != one(S)
 
+   U = MatrixSpace(Z35Z(), 3, 3)
+
+   A = U(map(Z35Z(), [1 2 3; 4 5 6; 7 8 9]))
+   B = U(map(Z35Z(), [1 2 3; 4 5 6; 7 8 9]))
+
+   @test A == B
+
+   @test A != one(U)
+
+
    println("PASS")
 end
 
@@ -350,6 +454,17 @@ function test_gen_mat_adhoc_comparison()
    @test A != one(S)
    @test one(S) == one(S)
 
+   U = MatrixSpace(Z35Z(), 3, 3)
+
+   A = U(map(Z35Z(), [1 2 3; 4 5 6; 7 8 9]))
+
+   @test U(12) == 12
+   @test U(5) == fmpz(5)
+   @test 12 == U(12)
+   @test fmpz(5) == U(5)
+   @test A != one(U)
+   @test one(U) == one(U)
+
    println("PASS")
 end
 
@@ -369,7 +484,15 @@ function test_gen_mat_powering()
 
    B = T( map(R, [1 2 3; 4 5 6]) )
 
-   @test_throws ErrorNotSquare B^1
+   @test_throws NotSquareError B^1
+
+   U = MatrixSpace(Z35Z(), 3, 3)
+
+   A = U(map(Z35Z(), [1 2 3; 4 5 6; 7 8 9]))
+
+   @test A^5 == A^2*A^3
+
+   @test A^0 == one(U)
 
    println("PASS")
 end
@@ -386,6 +509,13 @@ function test_gen_mat_adhoc_exact_division()
    @test divexact(12*A, fmpz(12)) == A
    @test divexact((1 + t)*A, 1 + t) == A
 
+   U = MatrixSpace(Z35Z(), 3, 3)
+
+   A = U(map(Z35Z(), [1 2 3; 4 5 6; 7 8 9]))
+
+   @test divexact(3*A, 3) == A
+   @test divexact(12*A, fmpz(12)) == A
+
    println("PASS")
 end
 
@@ -398,6 +528,12 @@ function test_gen_mat_gram()
    A = S([t + 1 t R(1); t^2 t t; R(-2) t + 2 t^2 + t + 1])
 
    @test gram(A) == S([2*t^2 + 2*t + 2 t^3 + 2*t^2 + t 2*t^2 + t - 1; t^3 + 2*t^2 + t t^4 + 2*t^2 t^3 + 3*t; 2*t^2 + t - 1 t^3 + 3*t t^4 + 2*t^3 + 4*t^2 + 6*t + 9])
+
+   U = MatrixSpace(Z35Z(), 3, 3)
+
+   A = U(map(Z35Z(), [1 2 3; 4 5 6; 7 8 9]))
+
+   @test gram(A) == U(map(Z35Z(), [14 32 15; 32 7 17; 15 17 19]))
 
    println("PASS")
 end
@@ -416,7 +552,13 @@ function test_gen_mat_trace()
 
    B = T( map(R, [1 2 3; 4 5 6]) )
 
-   @test_throws ErrorNotSquare trace(B)
+   @test_throws NotSquareError trace(B)
+
+   U = MatrixSpace(Z35Z(), 3, 3)
+
+   A = U(map(Z35Z(), [1 2 3; 4 5 6; 7 8 9]))
+
+   @test trace(A) == 15
 
    println("PASS")
 end
@@ -430,6 +572,13 @@ function test_gen_mat_content()
    A = S([t + 1 t R(1); t^2 t t; R(-2) t + 2 t^2 + t + 1])
 
    @test content((1 + t)*A) == 1 + t 
+
+   U = MatrixSpace(Z35Z(), 3, 3)
+
+   A = U(map(Z35Z(), [1 2 3; 4 5 6; 7 8 9]))
+
+   @test content(5*A) == 5
+
    println("PASS")
 end
 
@@ -507,6 +656,20 @@ function test_gen_mat_fflu()
    @test r == 2
    @test P*A == L*D*U
 
+   T = MatrixSpace(Z35Z(), 3, 3)
+
+   A = T(map(Z35Z(), [1 2 3; 4 5 6; 7 8 9]))
+
+   r, d, P, L, U = fflu(A)
+
+   D = T()
+   D[1, 1] = inv(U[1, 1])
+   D[2, 2] = inv(U[1, 1]*U[2, 2])
+   D[3, 3] = inv(U[2, 2])
+
+   @test r == 2
+   @test P*A == L*D*U
+
    println("PASS")
 end
 
@@ -558,7 +721,13 @@ function test_gen_mat_det()
 
    B = T( map(S, [1 2 3; 4 5 6]) )
 
-   @test_throws ErrorNotSquare det(B)
+   @test_throws NotSquareError det(B)
+
+   U = MatrixSpace(Z35Z(), 3, 3)
+
+   A = U(map(Z35Z(), [1 2 3; 4 5 6; 7 8 10]))
+
+   @test det(A) == 32
 
    println("PASS")
 end
@@ -630,6 +799,12 @@ function test_gen_mat_rank()
 
       @test rank(M) == i
    end
+
+   U = MatrixSpace(Z35Z(), 3, 3)
+
+   A = U(map(Z35Z(), [1 2 3; 4 5 6; 7 8 10]))
+
+   @test rank(A) == 3
 
    println("PASS")   
 end
@@ -712,7 +887,16 @@ function test_gen_mat_solve()
 
    B = T( map(R, [1 2 3; 4 5 6]) )
 
-   @test_throws ErrorNotSquare solve(B, B)
+   @test_throws NotSquareError solve(B, B)
+
+   U1 = MatrixSpace(Z35Z(), 3, 3)
+   U2 = MatrixSpace(Z35Z(), 3, 1)
+
+   A = U1(map(Z35Z(), [1 2 3; 4 5 6; 7 8 10]))
+   a = U2(map(Z35Z(), [1; 2; 3]))
+
+   B, b = solve(A, a)
+   @test A*B == b*a
 
    println("PASS")
 end
@@ -739,7 +923,7 @@ function test_gen_mat_solve_triu()
 
    B = T( map(K, [1 2 3; 4 5 6]) )
 
-   @test_throws ErrorNotSquare solve_triu(B, B, false)
+   @test_throws NotSquareError solve_triu(B, B, false)
 
 
    println("PASS")
@@ -797,6 +981,14 @@ function test_gen_mat_rref()
       @test r == i
       @test is_rref(A)
    end
+
+   U = MatrixSpace(Z35Z(), 3, 3)
+
+   A = U(map(Z35Z(), [1 2 3; 4 5 6; 7 8 10]))
+
+   r, d, B = rref(A)
+
+   @test is_rref(B*inv(d))
 
    println("PASS")   
 end
@@ -858,6 +1050,15 @@ function test_gen_mat_nullspace()
       @test iszero(M*N)
    end
 
+   U = MatrixSpace(Z35Z(), 3, 3)
+
+   A = U(map(Z35Z(), [1 2 3; 4 5 6; 7 8 9]))
+
+   n, N = nullspace(A)
+
+   @test rank(N) == n
+   @test iszero(A*N)
+
    println("PASS")   
 end
 
@@ -918,8 +1119,15 @@ function test_gen_mat_inversion()
 
    B = T( map(S, [1 2 3; 4 5 6]) )
 
-   @test_throws ErrorNotSquare inv(B)
+   @test_throws NotSquareError inv(B)
 
+   U = MatrixSpace(Z35Z(), 3, 3)
+
+   A = U(map(Z35Z(), [1 2 3; 4 5 6; 7 8 10]))
+
+   X, d = inv(A)
+
+   @test A*X == d*one(U)
 
    println("PASS")   
 end
@@ -946,7 +1154,15 @@ function test_gen_mat_hessenberg()
    
    M = S( map(R, [1 2 3; 4 5 6]) )
 
-   @test_throws ErrorNotSquare hessenberg(M)
+   @test_throws NotSquareError hessenberg(M)
+
+   U = MatrixSpace(Z35Z(), 3, 3)
+
+   A = U(map(Z35Z(), [1 2 3; 4 5 6; 7 8 9]))
+
+   B = hessenberg(A)
+
+   @test is_hessenberg(B)
 
    println("PASS")   
 end
@@ -1015,10 +1231,10 @@ function test_gen_mat_charpoly()
 
    A = T( map(R, [1 2 3; 4 5 6]) )
 
-   @test_throws ErrorNotSquare charpoly(U, A)
-   @test_throws ErrorNotSquare charpoly_hessenberg!(U, A)
-   @test_throws ErrorNotSquare charpoly_danilevsky!(U, A)
-   @test_throws ErrorNotSquare charpoly_danilevsky_ff!(U, A)
+   @test_throws NotSquareError charpoly(U, A)
+   @test_throws NotSquareError charpoly_hessenberg!(U, A)
+   @test_throws NotSquareError charpoly_danilevsky!(U, A)
+   @test_throws NotSquareError charpoly_danilevsky_ff!(U, A)
 
    println("PASS")   
 end
@@ -1095,7 +1311,7 @@ function test_gen_mat_minpoly()
 
    M = S( map(R, [1 2 3; 4 5 6]) )
 
-   @test_throws ErrorNotSquare minpoly(T, M) 
+   @test_throws NotSquareError minpoly(T, M) 
 
    R, x = PolynomialRing(ZZ, "x")
    S, y = PolynomialRing(R, "y")
@@ -1142,7 +1358,7 @@ function test_gen_mat_minpoly()
 
    A = S( map(R, [1 2 3; 4 5 6]) )
 
-   @test_throws ErrorNotSquare minpoly(T, A) 
+   @test_throws NotSquareError minpoly(T, A) 
 
    println("PASS")   
 end
@@ -1165,6 +1381,13 @@ function test_gen_concat()
 
       @test vcat(transpose(M1), transpose(M2)) == transpose(hcat(M1, M2))
    end
+
+   U = MatrixSpace(Z35Z(), 3, 3)
+
+   A = U(map(Z35Z(), [1 2 3; 4 5 6; 7 8 10])) 
+   B = U(map(Z35Z(), [10 9 8; 7 6 5; 4 3 1]))
+
+   @test vcat(transpose(A), transpose(B)) == transpose(hcat(A, B))
 
    println("PASS")   
 end
