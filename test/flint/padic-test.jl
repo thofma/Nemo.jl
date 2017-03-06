@@ -132,6 +132,10 @@ function test_padic_adhoc_binary()
 
    @test c*(fmpz(1)//7) == O(R, 7^2)
 
+   @test 12//11*b == 3*7^2 + 3*7^3 + O(R, 7^5)
+
+   @test c*1//7 == O(R, 7^2)
+
    println("PASS")
 end
 

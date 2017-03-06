@@ -316,6 +316,9 @@ function test_arb_binary_ops()
    @test x ^ Int(4) == 16
    @test x ^ QQ(4) == 16
 
+   @test 1//2 * x == 1
+   @test x * 1//2 ==1
+
    println("PASS")
 end
 

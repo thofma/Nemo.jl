@@ -155,6 +155,11 @@ function test_acb_poly_adhoc_binary()
 
    @test CC(12) - g == -x^3-3*x+10
 
+   h = 2x^3 + 6x + 4
+
+   @test 1//2 * h == g
+   @test h * 1//2 == g
+
    println("PASS")
 end
 

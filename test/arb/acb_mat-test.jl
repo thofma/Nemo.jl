@@ -45,15 +45,15 @@ function test_acb_mat_constructors()
 
    @test isa(r, MatElem)
 
-   @test_throws ErrorConstrDimMismatch S([1 2])
-   @test_throws ErrorConstrDimMismatch S([1, 2])
-   @test_throws ErrorConstrDimMismatch S([1 2 3; 4 5 6; 7 8 9; 10 11 12])
-   @test_throws ErrorConstrDimMismatch S([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
-   @test_throws ErrorConstrDimMismatch S([(1,1) (2,2)])
-   @test_throws ErrorConstrDimMismatch S([(1,1), (2,2)])
-   @test_throws ErrorConstrDimMismatch S([(1,1) (2,2) (3,3); (4,4) (5,5) (6,6);
+   @test_throws MatConstrError S([1 2])
+   @test_throws MatConstrError S([1, 2])
+   @test_throws MatConstrError S([1 2 3; 4 5 6; 7 8 9; 10 11 12])
+   @test_throws MatConstrError S([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+   @test_throws MatConstrError S([(1,1) (2,2)])
+   @test_throws MatConstrError S([(1,1), (2,2)])
+   @test_throws MatConstrError S([(1,1) (2,2) (3,3); (4,4) (5,5) (6,6);
                                           (7,7) (8,8) (9,9); (10,10) (11,11) (12,12)])
-   @test_throws ErrorConstrDimMismatch S([(1,1), (2,2), (3,3), (4,4), (5,5), (6,6), (7,7),
+   @test_throws MatConstrError S([(1,1), (2,2), (3,3), (4,4), (5,5), (6,6), (7,7),
                                           (8,8), (9,9), (10,10)])
 
    println("PASS")
@@ -302,7 +302,7 @@ function test_acb_mat_inversion()
 
    D = T([1 2 3; 4 5 6])
 
-   @test_throws ErrorNotSquare inv(D)
+   @test_throws NotSquareError inv(D)
 
    println("PASS")
 end
@@ -359,7 +359,7 @@ function test_acb_mat_charpoly()
    
    B = T([1 2 3; 4 5 6])
 
-   @test_throws ErrorNotSquare charpoly(R, B)
+   @test_throws NotSquareError charpoly(R, B)
 
    println("PASS")
 end
@@ -381,7 +381,7 @@ function test_acb_mat_det()
 
    B = T([1 2 3; 4 5 6])
 
-   @test_throws ErrorNotSquare det(B)
+   @test_throws NotSquareError det(B)
 
    println("PASS")
 end
@@ -405,7 +405,7 @@ function test_acb_mat_exp()
 
    D = T([1 2 3; 4 5 6])
 
-   @test_throws ErrorNotSquare exp(D)
+   @test_throws NotSquareError exp(D)
 
    println("PASS")
 end
@@ -447,7 +447,7 @@ function test_acb_mat_linear_solving()
    
    C = U([1 2 3; 4 5 6])
 
-   @test_throws ErrorNotSquare solve(C, b)
+   @test_throws NotSquareError solve(C, b)
 
    println("PASS")
 end

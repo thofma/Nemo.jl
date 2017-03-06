@@ -133,6 +133,10 @@ function test_fmpq_poly_adhoc_binary()
 
    @test g*fmpq(5, 7) == fmpz(10)//7*y+fmpz(55)//7
 
+   @test 5//7*g == fmpz(10)//7*y+fmpz(55)//7
+
+   @test g*5//7 == fmpz(10)//7*y+fmpz(55)//7
+
    @test f + 4 == 3*y^2 + 7*y + 7
 
    @test 7 + f == 3*y^2 + 7*y + 10

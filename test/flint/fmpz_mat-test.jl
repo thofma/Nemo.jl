@@ -25,10 +25,10 @@ function test_fmpz_mat_constructors()
 
    @test isa(m, MatElem)
 
-   @test_throws ErrorConstrDimMismatch (S([fmpz(1) 2; 3 4]))
-   @test_throws ErrorConstrDimMismatch (S([fmpz(1), 2, 3, 4]))
-   @test_throws ErrorConstrDimMismatch (S([fmpz(1) 2 3 4; 5 6 7 8; 1 2 3 4]))
-   @test_throws ErrorConstrDimMismatch (S([fmpz(1), 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4]))
+   @test_throws MatConstrError (S([fmpz(1) 2; 3 4]))
+   @test_throws MatConstrError (S([fmpz(1), 2, 3, 4]))
+   @test_throws MatConstrError (S([fmpz(1) 2 3 4; 5 6 7 8; 1 2 3 4]))
+   @test_throws MatConstrError (S([fmpz(1), 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4]))
 
    println("PASS")
 end
@@ -176,7 +176,7 @@ function test_fmpz_mat_powering()
 
    B = T([fmpz(1) 2 3; 4 5 6])
 
-   @test_throws ErrorNotSquare B^1
+   @test_throws NotSquareError B^1
 
    println("PASS")
 end
@@ -219,7 +219,7 @@ function test_fmpz_mat_trace()
 
    B = T([fmpz(1) 2 3; 4 5 6])
 
-   @test_throws ErrorNotSquare trace(B)
+   @test_throws NotSquareError trace(B)
 
    println("PASS")
 end
@@ -345,9 +345,9 @@ function test_fmpz_mat_det()
 
    B = T([fmpz(1) 2 3; 4 5 6])
 
-   @test_throws ErrorNotSquare det(B)
-   @test_throws ErrorNotSquare det_divisor(B)
-   @test_throws ErrorNotSquare det_given_divisor(B, 9)
+   @test_throws NotSquareError det(B)
+   @test_throws NotSquareError det_divisor(B)
+   @test_throws NotSquareError det_given_divisor(B, 9)
 
    println("PASS")
 end
@@ -501,8 +501,8 @@ function test_fmpz_mat_solve()
 
    C = T([fmpz(1); 3; 5])
 
-   @test_throws ErrorNotSquare solve(C, B)
-   @test_throws ErrorNotSquare solve_dixon(C, B)
+   @test_throws NotSquareError solve(C, B)
+   @test_throws NotSquareError solve_dixon(C, B)
  
    println("PASS")
 end

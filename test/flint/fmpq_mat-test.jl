@@ -29,10 +29,10 @@ function test_fmpq_mat_constructors()
 
    @test isa(m, MatElem)
 
-   @test_throws ErrorConstrDimMismatch (S([fmpq(1) 2; 3 4]))
-   @test_throws ErrorConstrDimMismatch (S([fmpq(1), 2, 3, 4]))
-   @test_throws ErrorConstrDimMismatch (S([fmpq(1) 2 3 4; 5 6 7 8; 1 2 3 4]))
-   @test_throws ErrorConstrDimMismatch (S([fmpq(1), 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4]))
+   @test_throws MatConstrError (S([fmpq(1) 2; 3 4]))
+   @test_throws MatConstrError (S([fmpq(1), 2, 3, 4]))
+   @test_throws MatConstrError (S([fmpq(1) 2 3 4; 5 6 7 8; 1 2 3 4]))
+   @test_throws MatConstrError (S([fmpq(1), 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4]))
 
    println("PASS")
 end
@@ -115,7 +115,9 @@ function test_fmpq_mat_adhoc_binary()
    @test 3*A == A*3
    @test fmpz(3)*A == A*fmpz(3)
    @test fmpq(3)*A == A*fmpq(3)
-  
+   @test 1//3*A == S([fmpq(2, 3) 1 fmpq(5, 3); fmpq(1, 3) fmpq(4, 3) fmpq(7, 3); 3 2 1])
+   @test A*1//3 == S([fmpq(2, 3) 1 fmpq(5, 3); fmpq(1, 3) fmpq(4, 3) fmpq(7, 3); 3 2 1])
+
    println("PASS")
 end
 
@@ -184,7 +186,7 @@ function test_fmpq_mat_powering()
 
    B = T([fmpq(1) 2 3; 4 5 6])
 
-   @test_throws ErrorNotSquare B^1
+   @test_throws NotSquareError B^1
 
    println("PASS")
 end
@@ -230,7 +232,7 @@ function test_fmpq_mat_trace()
 
    B = T([fmpq(1) 2 3; 4 5 6])
 
-   @test_throws ErrorNotSquare trace(B)
+   @test_throws NotSquareError trace(B)
 
    println("PASS")
 end
@@ -301,7 +303,7 @@ function test_fmpq_mat_det()
 
    B = T([fmpq(1) 2 3; 4 5 6])
 
-   @test_throws ErrorNotSquare det(B)
+   @test_throws NotSquareError det(B)
 
    println("PASS")
 end
@@ -384,8 +386,8 @@ function test_fmpq_mat_solve()
 
    C = T([fmpq(1); 3; 5])
 
-   @test_throws ErrorNotSquare solve(C, B)
-   @test_throws ErrorNotSquare solve_dixon(C, B)
+   @test_throws NotSquareError solve(C, B)
+   @test_throws NotSquareError solve_dixon(C, B)
    
    println("PASS")
 end
@@ -421,7 +423,7 @@ function test_fmpq_mat_charpoly()
 
    B = T([fmpq(1) 2 3; 4 5 6])
 
-   @test_throws ErrorNotSquare charpoly(R, B)
+   @test_throws NotSquareError charpoly(R, B)
 
    println("PASS")
 end
@@ -451,7 +453,7 @@ function test_fmpq_mat_minpoly()
 
    B = T([fmpq(1) 2 3; 4 5 6])
 
-   @test_throws ErrorNotSquare minpoly(R, B)
+   @test_throws NotSquareError minpoly(R, B)
    
    println("PASS")
 end

@@ -189,6 +189,8 @@ function test_acb_binary_ops()
    @test Int(2) ^ y == 16
    @test QQ(2) ^ y == 16
 
+   @test 1//2 * x == 1
+   @test x * 1//2 ==1
 
    println("PASS")
 end
