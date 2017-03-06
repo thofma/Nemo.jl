@@ -169,7 +169,7 @@ end
 ################################################################################
 
 function ^(x::acb_mat, y::UInt)
-  _check_is_square(x)
+  _check_issquare(x)
   z = parent(x)()
   ccall((:acb_mat_pow_ui, :libarb), Void,
               (Ptr{acb_mat}, Ptr{acb_mat}, UInt, Int),
@@ -362,7 +362,7 @@ doc"""
 > identity matrix. If $A$ cannot be inverted numerically an exception is raised.
 """
 function inv(x::acb_mat)
-  _check_is_square(x)
+  _check_issquare(x)
   z = parent(x)()
   r = ccall((:acb_mat_inv, :libarb), Cint,
               (Ptr{acb_mat}, Ptr{acb_mat}, Int), &z, &x, prec(parent(x)))
@@ -426,7 +426,7 @@ end
 ################################################################################
 
 function charpoly(x::AcbPolyRing, y::acb_mat)
-  _check_is_square(y)
+  _check_issquare(y)
   base_ring(x) != base_ring(y) && error("Base rings must coincide")
   z = x()
   ccall((:acb_mat_charpoly, :libarb), Void,
@@ -441,7 +441,7 @@ end
 ################################################################################
 
 function det(x::acb_mat)
-  _check_is_square(x)
+  _check_issquare(x)
   z = base_ring(x)()
   ccall((:acb_mat_det, :libarb), Void,
               (Ptr{acb}, Ptr{acb_mat}, Int), &z, &x, prec(parent(x)))
@@ -459,7 +459,7 @@ doc"""
 > Returns the exponential of the matrix $x$.
 """
 function exp(x::acb_mat)
-  _check_is_square(x)
+  _check_issquare(x)
   z = parent(x)()
   ccall((:acb_mat_exp, :libarb), Void,
               (Ptr{acb_mat}, Ptr{acb_mat}, Int), &z, &x, prec(parent(x)))
@@ -482,7 +482,7 @@ function lufact!(P::perm, x::acb_mat)
 end
 
 function lufact(P::perm, x::acb_mat)
-  _check_is_square(x)
+  _check_issquare(x)
   parent(P).n != rows(x) && error("Permutation does not match matrix")
   R = base_ring(x)
   L = parent(x)()
@@ -513,7 +513,7 @@ function solve!(z::acb_mat, x::acb_mat, y::acb_mat)
 end
 
 function solve(x::acb_mat, y::acb_mat)
-  _check_is_square(x)
+  _check_issquare(x)
   cols(x) != rows(y) && error("Matrix dimensions are wrong")
   z = parent(y)()
   solve!(z, x, y)

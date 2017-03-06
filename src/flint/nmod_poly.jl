@@ -843,7 +843,7 @@ end
 ################################################################################
 
 function det(M::GenMat{nmod_poly})
-   _check_is_square(M)
+   _check_issquare(M)
    try
       return det_fflu(M)
    catch

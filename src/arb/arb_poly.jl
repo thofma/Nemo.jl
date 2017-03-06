@@ -301,6 +301,8 @@ end
 
 *(x::arb_poly, y::fmpq_poly) = x*parent(x)(y)
 
+*{T <: Integer}(x::arb_poly, y::Rational{T}) = x*fmpq(y.num,y.den)
+
 +(x::Int, y::arb_poly) = y + x
 
 +(x::Integer, y::arb_poly) = y + x
@@ -348,6 +350,8 @@ end
 *(x::fmpz_poly, y::arb_poly) = y*x
 
 *(x::fmpq_poly, y::arb_poly) = y*x
+
+*{T <: Integer}(x::Rational{T}, y::arb_poly) = y*fmpq(x.num, x.den)
 
 ###############################################################################
 #

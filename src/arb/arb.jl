@@ -710,6 +710,9 @@ divexact(x::arb, y::UInt) = x // y
 divexact(x::fmpq, y::arb) = x // y
 divexact(x::arb, y::fmpq) = x // y
 
+*{T <: Integer}(x::Rational{T}, y::arb) = fmpq(x.num, x.den)*y
+*{T <: Integer}(x::arb, y::Rational{T}) = fmpq(y.num, y.den)*x
+
 ################################################################################
 #
 #  Absolute value

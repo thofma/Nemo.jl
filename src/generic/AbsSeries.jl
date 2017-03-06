@@ -835,7 +835,6 @@ end
 ###############################################################################
 
 function zero!{T <: RingElem}(c::GenAbsSeries{T})
-   c.coeffs = Array{T,1}(0)
    c.length = 0
    c.prec = parent(c).prec_max
    nothing

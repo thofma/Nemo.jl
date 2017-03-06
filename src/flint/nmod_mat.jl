@@ -177,7 +177,7 @@ function transpose(a::nmod_mat)
 end
 
 function transpose!(a::nmod_mat)
-  _check_is_square(a)
+  _check_issquare(a)
   ccall((:nmod_mat_transpose, :libflint), Void,
           (Ptr{nmod_mat}, Ptr{nmod_mat}), &a, &a)
 end
@@ -271,7 +271,7 @@ end
 ################################################################################
 
 function ^(x::nmod_mat, y::UInt)
-  _check_is_square(x)
+  _check_issquare(x)
   z = parent(x)()
   ccall((:nmod_mat_pow, :libflint), Void,
           (Ptr{nmod_mat}, Ptr{nmod_mat}, UInt), &z, &x, y)
@@ -355,7 +355,7 @@ end
 ################################################################################
 
 function trace(a::nmod_mat)
-  _check_is_square(a)
+  _check_issquare(a)
   r = ccall((:nmod_mat_trace, :libflint), UInt, (Ptr{nmod_mat}, ), &a)
   return base_ring(a)(r)
 end
@@ -367,7 +367,7 @@ end
 ################################################################################
 
 function det(a::nmod_mat)
-  _check_is_square(a)
+  _check_issquare(a)
   if is_prime(a.n)
      r = ccall((:nmod_mat_det, :libflint), UInt, (Ptr{nmod_mat}, ), &a)
      return base_ring(a)(r)
@@ -398,7 +398,7 @@ end
 ################################################################################
 
 function inv(a::nmod_mat)
-  _check_is_square(a)
+  _check_issquare(a)
   z = parent(a)()
   r = ccall((:nmod_mat_inv, :libflint), Int,
           (Ptr{nmod_mat}, Ptr{nmod_mat}), &z, &a)
@@ -414,7 +414,7 @@ end
 
 function solve(x::nmod_mat, y::nmod_mat)
   (base_ring(x) != base_ring(y)) && error("Matrices must have same base ring")
-  _check_is_square(x)
+  _check_issquare(x)
   (y.r != x.r) || y.c != 1 && ("Not a column vector in solve")
   z = parent(y)()
   r = ccall((:nmod_mat_solve, :libflint), Int,
@@ -581,7 +581,7 @@ end
 ################################################################################
 
 function charpoly(R::NmodPolyRing, a::nmod_mat)
-  _check_is_square(a)
+  _check_issquare(a)
   m = deepcopy(a)
   p = R()
   ccall((:nmod_mat_charpoly, :libflint), Void,
@@ -596,7 +596,7 @@ end
 ################################################################################
 
 function minpoly(R::NmodPolyRing, a::nmod_mat)
-  _check_is_square(a)
+  _check_issquare(a)
   p = R()
   ccall((:nmod_mat_minpoly, :libflint), Void,
           (Ptr{nmod_poly}, Ptr{nmod_mat}), &p, &a)

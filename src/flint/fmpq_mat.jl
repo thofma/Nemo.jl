@@ -256,6 +256,10 @@ end
 
 *(x::fmpq_mat, y::Integer) = fmpz(y)*x
 
+*{T <: Integer}(x::Rational{T}, y::fmpq_mat) = fmpq(x.num, x.den)*y
+
+*{T <: Integer}(x::fmpq_mat, y::Rational{T}) = fmpq(y.num, y.den)*x
+
 function +(x::fmpq_mat, y::Integer)
    z = deepcopy(x)
    for i = 1:min(rows(x), cols(x))
@@ -390,7 +394,7 @@ divexact(x::fmpq_mat, y::Integer) = divexact(x, fmpz(y))
 ###############################################################################
 
 function charpoly(R::FmpqPolyRing, x::fmpq_mat)
-   _check_is_square(x)
+   _check_issquare(x)
    z = R()
    ccall((:fmpq_mat_charpoly, :libflint), Void,
                 (Ptr{fmpq_poly}, Ptr{fmpq_mat}), &z, &x)
@@ -404,7 +408,7 @@ end
 ###############################################################################
 
 function minpoly(R::FmpqPolyRing, x::fmpq_mat)
-   _check_is_square(x)
+   _check_issquare(x)
    z = R()
    ccall((:fmpq_mat_minpoly, :libflint), Void,
                 (Ptr{fmpq_poly}, Ptr{fmpq_mat}), &z, &x)
@@ -418,7 +422,7 @@ end
 ###############################################################################
 
 function det(x::fmpq_mat)
-   _check_is_square(x)
+   _check_issquare(x)
    z = fmpq()
    ccall((:fmpq_mat_det, :libflint), Void,
                 (Ptr{fmpq}, Ptr{fmpq_mat}), &z, &x)
@@ -493,7 +497,7 @@ end
 ###############################################################################
 
 function solve(a::fmpq_mat, b::fmpq_mat)
-   _check_is_square(a)
+   _check_issquare(a)
    rows(b) != rows(a) && error("Incompatible dimensions in solve")
    z = parent(b)()
    nonsing = ccall((:fmpq_mat_solve_fraction_free, :libflint), Bool,
@@ -508,7 +512,7 @@ doc"""
 > usually faster for large systems.
 """
 function solve_dixon(a::fmpq_mat, b::fmpq_mat)
-   _check_is_square(a)
+   _check_issquare(a)
    rows(b) != rows(a) && error("Incompatible dimensions in solve")
    z = parent(b)()
    nonsing = ccall((:fmpq_mat_solve_dixon, :libflint), Bool,
@@ -524,7 +528,7 @@ end
 ###############################################################################
 
 function trace(x::fmpq_mat)
-   _check_is_square(x)
+   _check_issquare(x)
    d = fmpq()
    ccall((:fmpq_mat_trace, :libflint), Void,
                 (Ptr{fmpq}, Ptr{fmpq_mat}), &d, &x)

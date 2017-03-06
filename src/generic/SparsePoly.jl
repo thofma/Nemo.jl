@@ -1691,8 +1691,6 @@ end
 ###############################################################################
 
 function zero!{T <: RingElem}(a::GenSparsePoly{T})
-   a.coeffs = Array{T,1}(0)
-   a.exps = Array{UInt,1}(0)
    a.length = 0
    nothing
 end

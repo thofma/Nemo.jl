@@ -251,6 +251,10 @@ end
 
 *(x::fmpq_poly, y::fmpq) = y*x
 
+*{T <: Integer}(x::Rational{T}, y::fmpq_poly) = fmpq(x.num, x.den)*y
+
+*{T <: Integer}(x::fmpq_poly, y::Rational{T}) = fmpq(y.num, y.den)*x
+
 +(x::Integer, y::fmpq_poly) = y + fmpz(x)
 
 -(x::Integer, y::fmpq_poly) = fmpz(x) - y

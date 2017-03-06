@@ -327,11 +327,15 @@ end
 
 *(a::padic, b::fmpq) = a*parent(a)(b)
 
+*{T <: Integer}(a::padic, b::Rational{T}) = a*fmpq(b.num, b.den)
+
 *(a::Integer, b::padic) = b*a
 
 *(a::fmpz, b::padic) = b*a
 
 *(a::fmpq, b::padic) = b*a
+
+*{T <: Integer}(a::Rational{T}, b::padic) = b*fmpq(a.num, a.den)
 
 ###############################################################################
 #

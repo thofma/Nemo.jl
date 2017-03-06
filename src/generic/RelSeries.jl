@@ -1028,7 +1028,6 @@ end
 ###############################################################################
 
 function zero!{T <: RingElem}(a::GenRelSeries{T})
-   a.coeffs = Array{T,1}(0)
    a.length = 0
    a.prec = parent(a).prec_max
    a.val = parent(a).prec_max

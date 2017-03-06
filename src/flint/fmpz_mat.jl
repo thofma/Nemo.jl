@@ -326,7 +326,7 @@ end
 
 function ^(x::fmpz_mat, y::Int)
    y < 0 && throw(DomainError())
-   _check_is_square(x)
+   _check_issquare(x)
    z = parent(x)()
    ccall((:fmpz_mat_pow, :libflint), Void,
                 (Ptr{fmpz_mat}, Ptr{fmpz_mat}, Int),
@@ -479,7 +479,7 @@ reduce_mod(x::fmpz_mat, y::Integer) = reduce_mod(x, fmpz(y))
 ###############################################################################
 
 function charpoly(R::FmpzPolyRing, x::fmpz_mat)
-   _check_is_square(x)
+   _check_issquare(x)
    z = R()
    ccall((:fmpz_mat_charpoly, :libflint), Void,
                 (Ptr{fmpz_poly}, Ptr{fmpz_mat}), &z, &x)
@@ -493,7 +493,7 @@ end
 ###############################################################################
 
 function minpoly(R::FmpzPolyRing, x::fmpz_mat)
-   _check_is_square(x)
+   _check_issquare(x)
    z = R()
    ccall((:fmpz_mat_minpoly, :libflint), Void,
                 (Ptr{fmpz_poly}, Ptr{fmpz_mat}), &z, &x)
@@ -507,7 +507,7 @@ end
 ###############################################################################
 
 function det(x::fmpz_mat)
-   _check_is_square(x)
+   _check_issquare(x)
    z = fmpz()
    ccall((:fmpz_mat_det, :libflint), Void,
                 (Ptr{fmpz}, Ptr{fmpz_mat}), &z, &x)
@@ -520,7 +520,7 @@ doc"""
 > is nonzero, otherwise return zero.
 """
 function det_divisor(x::fmpz_mat)
-   _check_is_square(x)
+   _check_issquare(x)
    z = fmpz()
    ccall((:fmpz_mat_det_divisor, :libflint), Void,
                 (Ptr{fmpz}, Ptr{fmpz_mat}), &z, &x)
@@ -534,7 +534,7 @@ doc"""
 > otherwise a heuristic algorithm is used.
 """
 function det_given_divisor(x::fmpz_mat, d::fmpz, proved=true)
-   _check_is_square(x)
+   _check_issquare(x)
    z = fmpz()
    ccall((:fmpz_mat_det_modular_given_divisor, :libflint), Void,
                (Ptr{fmpz}, Ptr{fmpz_mat}, Ptr{fmpz}, Cint), &z, &x, &d, proved)
@@ -918,7 +918,7 @@ end
 ###############################################################################
 
 function solve(a::fmpz_mat, b::fmpz_mat)
-   _check_is_square(a)
+   _check_issquare(a)
    rows(b) != rows(a) && error("Incompatible dimensions in solve")
    z = parent(b)()
    d = fmpz()
@@ -936,7 +936,7 @@ doc"""
 > conditions are not met, an exception is raised.
 """
 function solve_dixon(a::fmpz_mat, b::fmpz_mat)
-   _check_is_square(a)
+   _check_issquare(a)
    rows(b) != rows(a) && error("Incompatible dimensions in solve")
    z = parent(b)()
    d = fmpz()
@@ -953,7 +953,7 @@ end
 ###############################################################################
 
 function trace(x::fmpz_mat)
-   _check_is_square(x)
+   _check_issquare(x)
    d = fmpz()
    ccall((:fmpz_mat_trace, :libflint), Int,
                 (Ptr{fmpz}, Ptr{fmpz_mat}), &d, &x)

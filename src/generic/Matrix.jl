@@ -537,7 +537,7 @@ doc"""
 """
 function ^{T <: RingElem}(a::MatElem{T}, b::Int)
    b < 0 && throw(DomainError())
-   _check_is_square(a)
+   _check_issquare(a)
    # special case powers of x for constructing polynomials efficiently
    if b == 0
       return one(parent(a))
@@ -566,7 +566,7 @@ doc"""
 > Return an array of matrices $M$ wher $M[i + 1] = a^i$ for $i = 0..d$
 """
 function powers{T <: RingElem}(a::MatElem{T}, d::Int)
-   _check_is_square(a)
+   _check_issquare(a)
    d <= 0 && throw(DomainError())
    S = parent(a)
    A = Array{MatElem{T}}(d + 1)
@@ -830,7 +830,7 @@ doc"""
 > require the matrix to be square.
 """
 function trace(x::MatElem)
-   _check_is_square(x)
+   _check_issquare(x)
    d = zero(base_ring(x))
    for i = 1:rows(x)
       addeq!(d, x[i, i])
@@ -1502,7 +1502,7 @@ doc"""
 > Return the determinant of the matrix $M$. We assume $M$ is square.
 """
 function det{T <: FieldElem}(M::MatElem{T})
-   _check_is_square(M)
+   _check_issquare(M)
    return det_fflu(M)
 end
 
@@ -1554,7 +1554,7 @@ function det_interpolation{T <: PolyElem}(M::MatElem{T})
 end
 
 function det{T <: PolyElem}(M::MatElem{T})
-   _check_is_square(M)
+   _check_issquare(M)
    try
       return det_interpolation(M)
    catch
@@ -1691,7 +1691,7 @@ end
 
 function solve_ff{T <: FieldElem}(M::MatElem{T}, b::MatElem{T})
    base_ring(M) != base_ring(b) && error("Base rings don't match in solve")
-   _check_is_square(M)
+   _check_issquare(M)
    rows(M) != rows(b) && error("Dimensions don't match in solve")
    m = rows(M)
    A = deepcopy(M)
@@ -1895,14 +1895,14 @@ end
 
 function solve_ringelem{T <: RingElem}(M::MatElem{T}, b::MatElem{T})
    base_ring(M) != base_ring(b) && error("Base rings don't match in solve")
-   _check_is_square(M)
+   _check_issquare(M)
    rows(M) != rows(b) && error("Dimensions don't match in solve")
    return solve_ff(M, b)
 end
 
 function solve{T <: PolyElem}(M::MatElem{T}, b::MatElem{T})
    base_ring(M) != base_ring(b) && error("Base rings don't match in solve")
-   _check_is_square(M)
+   _check_issquare(M)
    rows(M) != rows(b) && error("Dimensions don't match in solve")
    try
       return solve_interpolation(M, b)
@@ -1926,7 +1926,7 @@ doc"""
 > diagonal, and the diagonal will not be read.
 """
 function solve_triu{T <: FieldElem}(U::MatElem{T}, b::MatElem{T}, unit=false)
-   _check_is_square(U)
+   _check_issquare(U)
    n = rows(U)
    m = cols(b)
    R = base_ring(U)
@@ -1977,7 +1977,7 @@ doc"""
 > is raised.
 """
 function inv{T <: RingElem}(M::MatElem{T})
-   _check_is_square(M)
+   _check_issquare(M)
    n = cols(M)
    X = one(parent(M))
    A = deepcopy(M)
@@ -1992,7 +1992,7 @@ doc"""
 > identity matrix. If $A$ is singular an exception is raised.
 """
 function inv{T <: FieldElem}(M::MatElem{T})
-   _check_is_square(M)
+   _check_issquare(M)
    n = cols(M)
    X = one(parent(M))
    A = deepcopy(M)
@@ -2111,7 +2111,7 @@ end
 ###############################################################################
 
 function hessenberg!{T <: RingElem}(A::MatElem{T})
-   _check_is_square(A)
+   _check_issquare(A)
    R = base_ring(A)
    n = rows(A)
    u = R()
@@ -2165,7 +2165,7 @@ doc"""
 > diagonal.
 """
 function hessenberg{T <: RingElem}(A::MatElem{T})
-   _check_is_square(A)
+   _check_issquare(A)
    M = deepcopy(A)
    hessenberg!(M)
    return M
@@ -2194,7 +2194,7 @@ end
 ###############################################################################
 
 function charpoly_hessenberg!{T <: RingElem}(S::Ring, A::MatElem{T})
-   _check_is_square(A)
+   _check_issquare(A)
    R = base_ring(A)
    base_ring(S) != base_ring(A) && error("Cannot coerce into polynomial ring")
    n = rows(A)
@@ -2220,7 +2220,7 @@ function charpoly_hessenberg!{T <: RingElem}(S::Ring, A::MatElem{T})
 end
 
 function charpoly_danilevsky_ff!{T <: RingElem}(S::Ring, A::MatElem{T})
-   _check_is_square(A)
+   _check_issquare(A)
    R = base_ring(A)
    base_ring(S) != base_ring(A) && error("Cannot coerce into polynomial ring")
    n = rows(A)
@@ -2337,7 +2337,7 @@ function charpoly_danilevsky_ff!{T <: RingElem}(S::Ring, A::MatElem{T})
 end
 
 function charpoly_danilevsky!{T <: RingElem}(S::Ring, A::MatElem{T})
-   _check_is_square(A)
+   _check_issquare(A)
    R = base_ring(A)
    base_ring(S) != base_ring(A) && error("Cannot coerce into polynomial ring")
    n = rows(A)
@@ -2447,7 +2447,7 @@ doc"""
 > and the matrix is assumed to be square.
 """
 function charpoly{T <: RingElem}(V::Ring, Y::MatElem{T})
-   _check_is_square(Y)
+   _check_issquare(Y)
    R = base_ring(Y)
    base_ring(V) != base_ring(Y) && error("Cannot coerce into polynomial ring")
    n = rows(Y)
@@ -2527,7 +2527,7 @@ doc"""
 > of the resulting polynomial must be supplied and the matrix must be square.
 """
 function minpoly{T <: FieldElem}(S::Ring, M::MatElem{T}, charpoly_only = false)
-   _check_is_square(M)
+   _check_issquare(M)
    base_ring(S) != base_ring(M) && error("Unable to coerce polynomial")
    n = rows(M)
    if n == 0
@@ -2623,7 +2623,7 @@ doc"""
 > of the resulting polynomial must be supplied and the matrix must be square.
 """
 function minpoly{T <: RingElem}(S::Ring, M::MatElem{T}, charpoly_only = false)
-   _check_is_square(M)
+   _check_issquare(M)
    base_ring(S) != base_ring(M) && error("Unable to coerce polynomial")
    n = rows(M)
    if n == 0

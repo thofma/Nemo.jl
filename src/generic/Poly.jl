@@ -1964,7 +1964,6 @@ end
 ###############################################################################
 
 function zero!{T <: RingElem}(c::GenPoly{T})
-   c.coeffs = Array{T,1}(0)
    c.length = 0
    nothing
 end

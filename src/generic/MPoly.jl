@@ -2131,8 +2131,6 @@ end
 ###############################################################################
 
 function zero!{T <: RingElem, S, N}(a::GenMPoly{T, S, N})
-   a.coeffs = Array{T,1}(0)
-   a.exps = similar(a.exps, 0)
    a.length = 0
    nothing
 end

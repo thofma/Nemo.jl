@@ -253,6 +253,10 @@ end
 
 *(x::fmpq_abs_series, y::fmpq) = y*x
 
+*{T <: Integer}(x::Rational{T}, y::fmpq_abs_series) = fmpq(x.num, x.den)*y
+
+*{T <: Integer}(x::fmpq_abs_series, y::Rational{T}) = fmpq(y.num, y.den)*x
+
 ###############################################################################
 #
 #   Shifting

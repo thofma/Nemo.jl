@@ -2066,15 +2066,15 @@ end
 
 function _check_dim{T}(r::Int, c::Int, arr::Array{T, 2}, transpose::Bool = false)
   if !transpose
-    size(arr) != (r, c) && throw(ErrorConstrDimMismatch(r, c, size(arr)...))
+    size(arr) != (r, c) && throw(MatConstrError(r, c, size(arr)...))
   else
-    size(arr) != (c, r) && throw(ErrorConstrDimMismatch(r, c, (reverse(size(arr)))...))
+    size(arr) != (c, r) && throw(MatConstrError(r, c, (reverse(size(arr)))...))
   end
   return nothing
 end
 
 function _check_dim{T}(r::Int, c::Int, arr::Array{T, 1})
-  length(arr) != r*c && throw(ErrorConstrDimMismatch(r, c, length(arr)))
+  length(arr) != r*c && throw(MatConstrError(r, c, length(arr)))
   return nothing
 end
 

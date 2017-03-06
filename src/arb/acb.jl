@@ -339,6 +339,9 @@ divexact(x::acb, y::arb) = x // y
 /(x::arb, y::acb) = x // y
 /(x::acb, y::arb) = x // y
 
+*{T <: Integer}(x::Rational{T}, y::acb) = fmpq(x.num, x.den)*y
+*{T <: Integer}(x::acb, y::Rational{T}) = fmpq(y.num, y.den)*x
+
 ################################################################################
 #
 #  Comparison
