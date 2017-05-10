@@ -580,6 +580,7 @@ function zero!(z::padic)
    ctx = parent(z)
    ccall((:padic_zero, :libflint), Void, 
          (Ptr{padic}, Ptr{FlintPadicField}), &z, &ctx)
+   return z
 end
 
 function mul!(z::padic, x::padic, y::padic)
@@ -588,6 +589,7 @@ function mul!(z::padic, x::padic, y::padic)
    ccall((:padic_mul, :libflint), Void, 
          (Ptr{padic}, Ptr{padic}, Ptr{padic}, Ptr{FlintPadicField}), 
                &z, &x, &y, &ctx)
+   return z
 end
 
 function addeq!(x::padic, y::padic)
@@ -596,6 +598,7 @@ function addeq!(x::padic, y::padic)
    ccall((:padic_add, :libflint), Void, 
          (Ptr{padic}, Ptr{padic}, Ptr{padic}, Ptr{FlintPadicField}), 
                &x, &x, &y, &ctx)
+   return x
 end
 
 function addeq!(z::padic, x::padic, y::padic)
@@ -604,6 +607,7 @@ function addeq!(z::padic, x::padic, y::padic)
    ccall((:padic_add, :libflint), Void, 
          (Ptr{padic}, Ptr{padic}, Ptr{padic}, Ptr{FlintPadicField}), 
                &z, &x, &y, &ctx)
+   return z
 end
 
 ###############################################################################
