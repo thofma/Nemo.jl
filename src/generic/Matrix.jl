@@ -73,11 +73,11 @@ doc"""
 cols(a::MatElem) = parent(a).cols
 
 function getindex{T <: RingElem}(a::MatElem{T}, r::Int, c::Int)
-   return a.entries[r, c]
+   return a.entries[c, r]
 end
  
 function setindex!{T <: RingElem}(a::MatElem{T}, d::T, r::Int, c::Int)
-   a.entries[r, c] = d
+   a.entries[c, r] = d
 end
 
 setindex_t!{T <: RingElem}(a::MatElem{T}, d::T, r::Int, c::Int) = setindex!(a, d, c, r)
@@ -195,7 +195,7 @@ doc"""
 """
 function -(x::MatElem)
    par = parent(x)
-   return par(-x.entries)
+   return par(-x.entries')
 end
 
 ###############################################################################
@@ -270,7 +270,7 @@ doc"""
 > Return $x\times y$.
 """
 function *(x::Integer, y::MatElem)
-   z = similar(y.entries)
+   z = similar(y.entries, rows(y), cols(y))
    parz = parent(y)
    for i = 1:rows(y)
       for j = 1:cols(y)
@@ -285,7 +285,7 @@ doc"""
 > Return $x\times y$.
 """
 function *(x::fmpz, y::MatElem)
-   z = similar(y.entries)
+   z = similar(y.entries, rows(y), cols(y))
    parz = parent(y)
    for i = 1:rows(y)
       for j = 1:cols(y)
@@ -300,7 +300,7 @@ doc"""
 > Return $x\times y$.
 """
 function *{T <: RingElem}(x::T, y::MatElem{T})
-   z = similar(y.entries)
+   z = similar(y.entries, rows(y), cols(y))
    parz = parent(y)
    for i = 1:rows(y)
       for j = 1:cols(y)
@@ -333,7 +333,7 @@ doc"""
 > Return $S(x) + y$ where $S$ is the parent of $y$.
 """
 function +(x::Integer, y::MatElem)
-   z = similar(y.entries)
+   z = similar(y.entries, rows(y), cols(y))
    parz = parent(y)
    R = base_ring(y)
    for i = 1:rows(y)
@@ -359,7 +359,7 @@ doc"""
 > Return $S(x) + y$ where $S$ is the parent of $y$.
 """
 function +(x::fmpz, y::MatElem)
-   z = similar(y.entries)
+   z = similar(y.entries, rows(y), cols(y))
    parz = parent(y)
    R = base_ring(y)
    for i = 1:rows(y)
@@ -385,7 +385,7 @@ doc"""
 > Return $S(x) + y$ where $S$ is the parent of $y$.
 """
 function +{T <: RingElem}(x::T, y::MatElem{T})
-   z = similar(y.entries)
+   z = similar(y.entries, rows(y), cols(y))
    parz = parent(y)
    for i = 1:rows(y)
       for j = 1:cols(y)
@@ -410,7 +410,7 @@ doc"""
 > Return $S(x) - y$ where $S$ is the parent of $y$.
 """
 function -(x::Integer, y::MatElem)
-   z = similar(y.entries)
+   z = similar(y.entries, rows(y), cols(y))
    parz = parent(y)
    R = base_ring(y)
    for i = 1:rows(y)
@@ -430,7 +430,7 @@ doc"""
 > Return $x - S(y)$, where $S$ is the parent of $x$
 """
 function -(x::MatElem, y::Integer) 
-   z = similar(x.entries)
+   z = similar(x.entries, rows(x), cols(x))
    parz = parent(x)
    R = base_ring(x)
    for i = 1:rows(x)
@@ -450,7 +450,7 @@ doc"""
 > Return $S(x) - y$ where $S$ is the parent of $y$.
 """
 function -(x::fmpz, y::MatElem)
-   z = similar(y.entries)
+   z = similar(y.entries, rows(y), cols(y))
    parz = parent(y)
    R = base_ring(y)
    for i = 1:rows(y)
@@ -470,7 +470,7 @@ doc"""
 > Return $x - S(y)$, where $S$ is the parent of $x$
 """
 function -(x::MatElem, y::fmpz) 
-   z = similar(x.entries)
+   z = similar(x.entries, rows(x), cols(x))
    parz = parent(x)
    R = base_ring(x)
    for i = 1:rows(x)
@@ -490,7 +490,7 @@ doc"""
 > Return $S(x) - y$ where $S$ is the parent of $y$.
 """
 function -{T <: RingElem}(x::T, y::MatElem{T})
-   z = similar(y.entries)
+   z = similar(y.entries, rows(y), cols(y))
    parz = parent(y)
    R = base_ring(y)
    for i = 1:rows(y)
@@ -510,7 +510,7 @@ doc"""
 > Return $x - S(y)$, where $S$ is the parent of $a$.
 """
 function -{T <: RingElem}(x::MatElem{T}, y::T) 
-   z = similar(x.entries)
+   z = similar(x.entries, rows(x), cols(x))
    parz = parent(x)
    R = base_ring(x)
    for i = 1:rows(x)
@@ -727,7 +727,7 @@ doc"""
 > $y$. Each division is expected to be exact.
 """
 function divexact(x::MatElem, y::Integer)
-   z = similar(x.entries)
+   z = similar(x.entries, rows(x), cols(x))
    parz = parent(x)
    for i = 1:rows(x)
       for j = 1:cols(x)
@@ -743,7 +743,7 @@ doc"""
 > $y$. Each division is expected to be exact.
 """
 function divexact(x::MatElem, y::fmpz)
-   z = similar(x.entries)
+   z = similar(x.entries, rows(x), cols(x))
    parz = parent(x)
    for i = 1:rows(x)
       for j = 1:cols(x)
@@ -759,7 +759,7 @@ doc"""
 > $y$. Each division is expected to be exact.
 """
 function divexact{T <: RingElem}(x::MatElem{T}, y::T)
-   z = similar(x.entries)
+   z = similar(x.entries, rows(x), cols(x))
    parz = parent(x)
    for i = 1:rows(x)
       for j = 1:cols(x)
@@ -785,7 +785,7 @@ function transpose(x::MatElem)
    else
       par = MatrixSpace(base_ring(x), cols(x), rows(x))
    end
-   return par(permutedims(x.entries, [2, 1]))
+   return par(x.entries)
 end
 
 ###############################################################################
@@ -2849,10 +2849,10 @@ function (a::GenMatSpace{T}){T <: RingElem}(b::RingElem)
 end
 
 function (a::GenMatSpace{T}){T <: RingElem}()
-   entries = Array{T}(a.rows, a.cols)
+   entries = Array{T}(a.cols, a.rows)
    for i = 1:a.rows
       for j = 1:a.cols
-         entries[i, j] = zero(base_ring(a))
+         entries[j, i] = zero(base_ring(a))
       end
    end
    z = GenMat{T}(entries)
@@ -2861,13 +2861,13 @@ function (a::GenMatSpace{T}){T <: RingElem}()
 end
 
 function (a::GenMatSpace{T}){T <: RingElem}(b::Integer)
-   entries = Array{T}(a.rows, a.cols)
+   entries = Array{T}(a.cols, a.rows)
    for i = 1:a.rows
       for j = 1:a.cols
          if i != j
-            entries[i, j] = zero(base_ring(a))
+            entries[j, i] = zero(base_ring(a))
          else
-            entries[i, j] = base_ring(a)(b)
+            entries[j, i] = base_ring(a)(b)
          end
       end
    end
@@ -2877,13 +2877,13 @@ function (a::GenMatSpace{T}){T <: RingElem}(b::Integer)
 end
 
 function (a::GenMatSpace{T}){T <: RingElem}(b::fmpz)
-   entries = Array{T}(a.rows, a.cols)
+   entries = Array{T}(a.cols, a.rows)
    for i = 1:a.rows
       for j = 1:a.cols
          if i != j
-            entries[i, j] = zero(base_ring(a))
+            entries[j, i] = zero(base_ring(a))
          else
-            entries[i, j] = base_ring(a)(b)
+            entries[j, i] = base_ring(a)(b)
          end
       end
    end
@@ -2894,13 +2894,13 @@ end
 
 function (a::GenMatSpace{T}){T <: RingElem}(b::T)
    parent(b) != base_ring(a) && error("Unable to coerce to matrix")
-   entries = Array{T}(a.rows, a.cols)
+   entries = Array{T}(a.cols, a.rows)
    for i = 1:a.rows
       for j = 1:a.cols
          if i != j
-            entries[i, j] = zero(base_ring(a))
+            entries[j, i] = zero(base_ring(a))
          else
-            entries[i, j] = deepcopy(b)
+            entries[j, i] = deepcopy(b)
          end
       end
    end
@@ -2919,7 +2919,7 @@ function (a::GenMatSpace{T}){T <: RingElem}(b::Array{T, 2})
       parent(b[1, 1]) != base_ring(a) && error("Unable to coerce to matrix")
    end
    _check_dim(a.rows, a.cols, b)
-   z = GenMat{T}(b)
+   z = GenMat{T}(b')
    z.parent = a
    return z
 end
@@ -2929,7 +2929,7 @@ function (a::GenMatSpace{T}){T <: RingElem}(b::Array{T, 1})
       parent(b[1]) != base_ring(a) && error("Unable to coerce to matrix")
    end
    _check_dim(a.rows, a.cols, b)
-   b = reshape(b, a.cols, a.rows)'
+   b = reshape(b, a.cols, a.rows)
    z = GenMat{T}(b)
    z.parent = a
    return z
