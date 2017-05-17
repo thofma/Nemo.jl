@@ -129,11 +129,11 @@ doc"""
 cols(a::MatElem) = size(a.entries, 2)
 
 function getindex{T <: RingElem}(a::MatElem{T}, r::Int, c::Int)
-   return a.entries[r, c]
+   return a.entries[c, r]
 end
  
 function setindex!{T <: RingElem}(a::MatElem{T}, d::T, r::Int, c::Int)
-   a.entries[r, c] = d
+   a.entries[c, r] = d
 end
 
 setindex_t!{T <: RingElem}(a::MatElem{T}, d::T, r::Int, c::Int) = setindex!(a, d, c, r)
@@ -825,7 +825,7 @@ function transpose(x::MatElem)
    else
       par = MatrixSpace(base_ring(x), cols(x), rows(x))
    end
-   return par(permutedims(x.entries, [2, 1]))
+   return par(x.entries)
 end
 
 ###############################################################################
@@ -3832,10 +3832,10 @@ function (a::GenMatSpace{T}){T <: RingElem}(b::RingElem)
 end
 
 function (a::GenMatSpace{T}){T <: RingElem}()
-   entries = Array{T}(a.rows, a.cols)
+   entries = Array{T}(a.cols, a.rows)
    for i = 1:a.rows
       for j = 1:a.cols
-         entries[i, j] = zero(base_ring(a))
+         entries[j, i] = zero(base_ring(a))
       end
    end
    z = GenMat{T}(entries)
@@ -3844,13 +3844,13 @@ function (a::GenMatSpace{T}){T <: RingElem}()
 end
 
 function (a::GenMatSpace{T}){T <: RingElem}(b::Integer)
-   entries = Array{T}(a.rows, a.cols)
+   entries = Array{T}(a.cols, a.rows)
    for i = 1:a.rows
       for j = 1:a.cols
          if i != j
-            entries[i, j] = zero(base_ring(a))
+            entries[j, i] = zero(base_ring(a))
          else
-            entries[i, j] = base_ring(a)(b)
+            entries[j, i] = base_ring(a)(b)
          end
       end
    end
@@ -3860,13 +3860,13 @@ function (a::GenMatSpace{T}){T <: RingElem}(b::Integer)
 end
 
 function (a::GenMatSpace{T}){T <: RingElem}(b::fmpz)
-   entries = Array{T}(a.rows, a.cols)
+   entries = Array{T}(a.cols, a.rows)
    for i = 1:a.rows
       for j = 1:a.cols
          if i != j
-            entries[i, j] = zero(base_ring(a))
+            entries[j, i] = zero(base_ring(a))
          else
-            entries[i, j] = base_ring(a)(b)
+            entries[j, i] = base_ring(a)(b)
          end
       end
    end
@@ -3877,13 +3877,13 @@ end
 
 function (a::GenMatSpace{T}){T <: RingElem}(b::T)
    parent(b) != base_ring(a) && error("Unable to coerce to matrix")
-   entries = Array{T}(a.rows, a.cols)
+   entries = Array{T}(a.cols, a.rows)
    for i = 1:a.rows
       for j = 1:a.cols
          if i != j
-            entries[i, j] = zero(base_ring(a))
+            entries[j, i] = zero(base_ring(a))
          else
-            entries[i, j] = deepcopy(b)
+            entries[j, i] = deepcopy(b)
          end
       end
    end
@@ -3902,8 +3902,8 @@ function (a::GenMatSpace{T}){T <: RingElem}(b::Array{T, 2})
       parent(b[1, 1]) != base_ring(a) && error("Unable to coerce to matrix")
    end
    _check_dim(a.rows, a.cols, b)
-   z = GenMat{T}(b)
-   z.base_ring = a.base_ring
+   z = GenMat{T}(b')
+   z.parent = a
    return z
 end
 
@@ -3912,7 +3912,7 @@ function (a::GenMatSpace{T}){T <: RingElem}(b::Array{T, 1})
       parent(b[1]) != base_ring(a) && error("Unable to coerce to matrix")
    end
    _check_dim(a.rows, a.cols, b)
-   b = reshape(b, a.cols, a.rows)'
+   b = reshape(b, a.cols, a.rows)
    z = GenMat{T}(b)
    z.base_ring = a.base_ring
    return z
