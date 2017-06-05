@@ -195,7 +195,9 @@ doc"""
 """
 function -(x::MatElem)
    par = parent(x)
-   return par(-x.entries')
+   y = par()
+   y.entries = -x.entries
+   return y
 end
 
 ###############################################################################
@@ -786,6 +788,113 @@ function transpose(x::MatElem)
       par = MatrixSpace(base_ring(x), cols(x), rows(x))
    end
    return par(x.entries)
+end
+
+doc"""
+    transpose!(x::MatElem)
+> Transpose the given matrix in-place.
+"""
+function transpose!(x::MatElem)
+   _transpose!(x.entries)
+   if rows(x) != cols(x)
+      x.entries = reshape(x.entries, rows(x), cols(x))
+      x.parent = MatrixSpace(base_ring(x), cols(x), rows(x))
+   end
+   return nothing
+end
+
+doc"""
+    _transpose!{T}(A::Array{T,2})
+> Transpose a given $m\times n$ array $A$ by rearranging it's elements in-place.
+> An $m\cdot n$ BitArray is used to determine wether an element has already been
+> moved. Note that $A$ will stay an $m\times n$ array. Use A = reshape(A, n, m)
+> to obtain the right dimensions.
+"""
+#=
+   We use an algorithm due to S. Laflin and M. A. Brebner.
+   "In-situ transposition of a rectangular matrix."
+=#
+function _transpose!{T}(A::Array{T,2})
+   m = size(A,1)
+   n = size(A,2)
+
+   if m<2 || n<2
+      return nothing
+   end
+
+   # If A is square, we just swap A[i,j] and A[j,i]
+   if m == n
+      for i = 1:m
+         for j = 1:i-1
+            t = A[i,j]
+            A[i,j] = A[j,i]
+            A[j,i] = t
+         end
+      end
+      return nothing
+   end
+
+   ncount = 2 # number of elements which are in the right position
+   m1 = m - 1
+   n1 = n - 1
+   m2 = m - 2
+   mn = m*n
+   moved = falses(mn)
+
+   # Check for "single points" which don't need to be moved.
+   for ia = 1:m2
+      ib, r = divrem(ia*n1, m1)
+      r != 0 ? continue : nothing
+      ncount += 1
+      i = ia*n + ib
+      @inbounds moved[i] = true
+   end
+
+   k = mn - 1
+   kmi = k - 1
+   max = mn
+   for i = 1:mn
+      # At least one loop must be rearranged.
+      if i != 1
+         # search for the next loop
+         kmi = k - i
+         max = kmi + 1
+         @inbounds moved[i] ? continue : nothing
+         i1 = i
+         i2 = m*i1 - k*div(i1, n)
+         i1 == i2 ? continue : nothing
+         while i2 > i && i2 < max
+            i1 = i2
+            i2 = m*i1 - k*div(i1, n)
+         end
+         i2 != i ? continue : nothing
+      end
+
+      # rearrange the elements
+      i1 = i
+      t = A[i1 + 1]
+      while true
+         i2 = m*i1 - k*div(i1, n)
+         @inbounds moved[i1] = true
+         ncount += 1
+         if i2 == i || i2 >= kmi
+            if max == kmi || i2 == i
+               A[i1 + 1] = t
+               if ncount >= mn
+                  return nothing
+               end
+               i2 == max || max == kmi ? break : nothing
+               max = kmi
+               i1 = max
+               t = A[i1 + 1]
+               continue
+            end
+            max = kmi
+         end
+         A[i1 + 1] = A[i2 + 1]
+         i1 = i2
+      end
+   end
 end
 
 ###############################################################################
@@ -2919,7 +3028,11 @@ function (a::GenMatSpace{T}){T <: RingElem}(b::Array{T, 2})
       parent(b[1, 1]) != base_ring(a) && error("Unable to coerce to matrix")
    end
    _check_dim(a.rows, a.cols, b)
-   z = GenMat{T}(b')
+   _transpose!(b)
+   if a.cols != a.rows
+      b = reshape(b, a.cols, a.rows)
+   end
+   z = GenMat{T}(b)
    z.parent = a
    return z
 end
