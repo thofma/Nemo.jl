@@ -820,12 +820,9 @@ doc"""
 > Return the transpose of the given matrix.
 """
 function transpose(x::MatElem)
-   if rows(x) == cols(x)
-      par = parent(x)
-   else
-      par = MatrixSpace(base_ring(x), cols(x), rows(x))
-   end
-   return par(x.entries)
+   y = deepcopy(x)
+   transpose!(y)
+   return y
 end
 
 doc"""
