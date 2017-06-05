@@ -1099,6 +1099,32 @@ function test_gen_concat()
    println("PASS")   
 end
 
+function test_gen_mat_transpose()
+   print("GenMat.transpose...")
+
+   R, x = PolynomialRing(ZZ, "x")
+
+   A = Matrix(R, 3, 3, map(R, Any[1 2 3; x x^2 x^3; x 2*x 3*x]))
+   B = Matrix(R, 3, 3, map(R, Any[1 x x; 2 x^2 2*x; 3 x^3 3*x]))
+
+   @test transpose(A) == B
+
+   transpose!(A)
+
+   @test A == B
+
+   A = Matrix(R, 2, 4, map(R, Any[1 2 3 4; x x^2 x^3 x^4]))
+   B = Matrix(R, 4, 2, map(R, Any[1 x; 2 x^2; 3 x^3; 4 x^4]))
+
+   @test transpose(A) == B
+
+   transpose!(A)
+
+   @test A == B
+
+   println("PASS")
+end
+
 function test_gen_mat()
    test_gen_mat_constructors()
    test_gen_mat_manipulation()
@@ -1127,6 +1153,7 @@ function test_gen_mat()
    test_gen_mat_minpoly()
    test_gen_row_swapping()
    test_gen_concat()
+   test_gen_mat_transpose()
 
    println("")
 end
