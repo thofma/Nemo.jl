@@ -1487,6 +1487,31 @@ function test_gen_mat_weak_popov()
          @test isunit(det(U))
       end
    end
+end
+
+function test_gen_mat_transpose()
+   print("GenMat.transpose...")
+
+   R, x = PolynomialRing(ZZ, "x")
+
+   A = Matrix(R, 3, 3, map(R, Any[1 2 3; x x^2 x^3; x 2*x 3*x]))
+   B = Matrix(R, 3, 3, map(R, Any[1 x x; 2 x^2 2*x; 3 x^3 3*x]))
+
+   @test transpose(A) == B
+
+   transpose!(A)
+
+   @test A == B
+
+   A = Matrix(R, 2, 4, map(R, Any[1 2 3 4; x x^2 x^3 x^4]))
+   B = Matrix(R, 4, 2, map(R, Any[1 x; 2 x^2; 3 x^3; 4 x^4]))
+
+   @test transpose(A) == B
+
+   transpose!(A)
+
+   @test A == B
+
    println("PASS")
 end
 
@@ -1524,6 +1549,7 @@ function test_gen_mat()
    test_gen_mat_snf_kb()
    test_gen_mat_snf()
    test_gen_mat_weak_popov()
+   test_gen_mat_transpose()
 
    println("")
 end
