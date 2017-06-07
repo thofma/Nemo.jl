@@ -807,11 +807,68 @@ doc"""
 > moved. Note that $A$ will stay an $m\times n$ array. Use A = reshape(A, n, m)
 > to obtain the right dimensions.
 """
+function _transpose!{T}(A::Array{T,2})
+   m = size(A,1)
+   n = size(A,2)
+
+   if m<2 || n<2
+      return nothing
+   end
+
+   # If A is square, we just swap A[i,j] and A[j,i]
+   if m == n
+      for i = 1:m
+         for j = 1:i-1
+            t = A[i,j]
+            A[i,j] = A[j,i]
+            A[j,i] = t
+         end
+      end
+      return nothing
+   end
+
+   ncount = 2 # number of elements which are in the right position
+   mn = m*n
+   moved = falses(mn)
+   k = mn - 1
+
+   # We don't need to move the first and the last element
+   for i = 2:k
+      @inbounds if moved[i]
+         continue
+      end
+      i1 = i
+      t = A[i1]
+      i2 = m*(i1 - 1) - k*div(i1 - 1, n) + 1
+      while i2 != i
+         A[i1] = A[i2]
+         @inbounds moved[i1] = true
+         ncount += 1
+         i1 = i2
+         i2 = m*(i1 - 1) - k*div(i1 - 1, n) + 1
+      end
+      A[i1] = t
+      @inbounds moved[i1] = true
+      ncount += 1
+      if ncount >= mn
+         break
+      end
+   end
+   return nothing
+end
+
+doc"""
+    _less_memory_transpose!{T}(A::Array{T,2})
+> Transpose a given $m\times n$ array $A$ by rearranging it's elements in-place.
+> A BitArray of length $(m + n)/2$ is used to determine wether an element has
+> already been moved. Note that $A$ will stay an $m\times n$ array. Use
+> A = reshape(A, n, m) to obtain the right dimensions.
+"""
 #=
    We use an algorithm due to S. Laflin and M. A. Brebner.
    "In-situ transposition of a rectangular matrix."
 =#
-function _transpose!{T}(A::Array{T,2})
+function _less_memory_transpose!{T}(A::Array{T,2})
    m = size(A,1)
    n = size(A,2)
 
@@ -836,7 +893,8 @@ function _transpose!{T}(A::Array{T,2})
    n1 = n - 1
    m2 = m - 2
    mn = m*n
-   moved = falses(mn)
+   iwrk = cld(m + n, 2)
+   moved = falses(iwrk)
 
    # Check for "single points" which don't need to be moved.
    for ia = 1:m2
@@ -844,7 +902,9 @@ function _transpose!{T}(A::Array{T,2})
       r != 0 ? continue : nothing
       ncount += 1
       i = ia*n + ib
-      @inbounds moved[i] = true
+      if i <= iwrk
+         @inbounds moved[i] = true
+      end
    end
 
    k = mn - 1
@@ -856,15 +916,18 @@ function _transpose!{T}(A::Array{T,2})
          # search for the next loop
          kmi = k - i
          max = kmi + 1
-         @inbounds moved[i] ? continue : nothing
-         i1 = i
-         i2 = m*i1 - k*div(i1, n)
-         i1 == i2 ? continue : nothing
-         while i2 > i && i2 < max
-            i1 = i2
+         if i <= iwrk
+            @inbounds moved[i] ? continue : nothing
+         else
+            i1 = i
             i2 = m*i1 - k*div(i1, n)
+            i1 == i2 ? continue : nothing
+            while i2 > i && i2 < max
+               i1 = i2
+               i2 = m*i1 - k*div(i1, n)
+            end
+            i2 != i ? continue : nothing
          end
-         i2 != i ? continue : nothing
       end
 
       # rearrange the elements
@@ -872,7 +935,9 @@ function _transpose!{T}(A::Array{T,2})
       t = A[i1 + 1]
       while true
          i2 = m*i1 - k*div(i1, n)
-         @inbounds moved[i1] = true
+         if i1 <= iwrk
+            @inbounds moved[i1] = true
+         end
          ncount += 1
          if i2 == i || i2 >= kmi
             if max == kmi || i2 == i
