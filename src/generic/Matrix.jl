@@ -193,10 +193,9 @@ doc"""
     -(a::MatElem)
 > Return $-a$.
 """
-function -(x::MatElem)
-   par = parent(x)
-   y = par()
-   y.entries = -x.entries
+function -{T}(x::MatElem{T})
+   y = GenMat{T}(-x.entries)
+   y.parent = parent(x)
    return y
 end
 
