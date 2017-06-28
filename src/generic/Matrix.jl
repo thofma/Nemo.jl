@@ -30,7 +30,7 @@ function similar{T}(x::GenMat{T})
 end
 
 function similar{T}(x::GenMat{T}, r::Int, c::Int)
-   z = GenMat{T}(similar(x.entries, r, c))
+   z = GenMat{T}(similar(x.entries, c, r))
    for i in 1:rows(z)
       for j in 1:cols(z)
          z[i, j] = zero(base_ring(x))
@@ -92,7 +92,7 @@ doc"""
 > Return the parent object of the given matrix.
 """
 parent{T}(a::MatElem{T}, cached::Bool = true) =
-    GenMatSpace{T}(a.base_ring, size(a.entries)..., cached)
+         GenMatSpace{T}(a.base_ring, rows(a), cols(a), cached)
 
 function check_parent(a::MatElem, b::MatElem)
   (base_ring(a) != base_ring(b) || rows(a) != rows(b) || cols(a) != cols(b)) && 
@@ -120,13 +120,13 @@ doc"""
     rows(a::MatElem)
 > Return the number of rows of the given matrix.
 """
-rows(a::MatElem) = size(a.entries, 1)
+rows(a::MatElem) = size(a.entries, 2)
 
 doc"""
     cols(a::MatElem)
 > Return the number of columns of the given matrix.
 """
-cols(a::MatElem) = size(a.entries, 2)
+cols(a::MatElem) = size(a.entries, 1)
 
 function getindex{T <: RingElem}(a::MatElem{T}, r::Int, c::Int)
    return a.entries[c, r]
@@ -833,7 +833,6 @@ function transpose!(x::MatElem)
    _transpose!(x.entries)
    if rows(x) != cols(x)
       x.entries = reshape(x.entries, rows(x), cols(x))
-      x.parent = MatrixSpace(base_ring(x), cols(x), rows(x))
    end
    return nothing
 end
@@ -4076,7 +4075,7 @@ function (a::GenMatSpace{T}){T <: RingElem}(b::Array{T, 2})
       b = reshape(b, a.cols, a.rows)
    end
    z = GenMat{T}(b)
-   z.parent = a
+   z.base_ring = parent(b[1, 1])
    return z
 end
 

@@ -1487,6 +1487,7 @@ function test_gen_mat_weak_popov()
          @test isunit(det(U))
       end
    end
+   println("PASS")
 end
 
 function test_gen_mat_transpose()
