@@ -1579,3 +1579,26 @@ convert(::Type{BigFloat}, n::fmpz) = BigFloat(BigInt(n))
 Base.promote_rule{T <: Integer}(::Type{fmpz}, ::Type{T}) = fmpz
 
 promote_rule{T <: Integer}(::Type{fmpz}, ::Type{T}) = fmpz
+
+##
+## to support rand(fmpz:fmpz)....
+##
+# note, we cannot get a UnitRange as this is only legal for subtypes of Real
+
+function Base.colon(a::Int, b::fmpz)
+  return fmpz(a):b
+end
+
+function one(::fmpz)
+  return fmpz(1)
+end
+
+function zero(::fmpz)
+  return fmpz(0)
+end
+
+function Base.unsafe_length(r::StepRange{fmpz, fmpz})
+  n = BigInt(div(r.stop + r.step - r.start, r.step))
+  last(r) < start(r) ? zero(BigInt) : n
+end
+
