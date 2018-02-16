@@ -38,7 +38,7 @@ mutable struct arf_struct
 end
 
 mutable struct mag_struct
-  exp::Int # fmpz
+  exp::Int  # fmpz
   man::UInt # mp_limb_t
 
   function mag_struct()
@@ -258,14 +258,14 @@ function _acb_clear_fn(x::acb)
 end
 
 mutable struct acb_calc_integrate_opts
-  deg_limit::Int   # <=0: default of 0.5*min(prec, rel_goal) + 10
-  eval_limit::Int  # <=0: default of 1000*prec*prec^2
-  depth_limit::Int # <=0: default of 2*prec
-  use_heap::Int32 # 0 append to the top of a stack; 1 binary heap
-  verbose::Int32 # 1 less verbose; 2 more verbose
+  deg_limit::Int    # <=0: default of 0.5*min(prec, rel_goal) + 10
+  eval_limit::Int   # <=0: default of 1000*prec*prec^2
+  depth_limit::Int  # <=0: default of 2*prec
+  use_heap::Cint    # 0 append to the top of a stack; 1 binary heap
+  verbose::Cint     # 1 less verbose; 2 more verbose
 
   function acb_calc_integrate_opts(deg_limit::Int, eval_limit::Int,
-    depth_limit::Int, use_heap::Int32, verbose::Int32)
+    depth_limit::Int, use_heap::Cint, verbose::Cint)
     return new(deg_limit, eval_limit, depth_limit, use_heap, verbose)
   end
 

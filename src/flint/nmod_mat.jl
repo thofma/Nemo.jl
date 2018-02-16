@@ -186,7 +186,7 @@ end
 ################################################################################
 
 function transpose(a::nmod_mat)
-  z = NmodMatSpace(base_ring(a), cols(a), rows(a))()
+  z = NmodMatSpace(base_ring(a), cols(a), rows(a), false)()
   ccall((:nmod_mat_transpose, :libflint), Void,
           (Ref{nmod_mat}, Ref{nmod_mat}), z, a)
   return z
