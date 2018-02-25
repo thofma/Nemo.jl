@@ -9,6 +9,29 @@
 const ARB_CALC_SUCCESS = UInt(0)
 const ARB_CALC_NO_CONVERGENCE = UInt(2)
 
+struct FunctionWrapper end
+
+(::FunctionWrapper)(f, args...) = f(args...)
+
+#struct CallWrapper end
+#
+#(::CallWrapper{Ret})(f, args...)::acb = f(args...)
+#
+#mutable struct Wrapper
+#  ptr::Ptr{Void}
+#  objptr::Ptr{Void}
+#  obj
+#  objT
+#
+#  function (::Type{Wrapper}){objT}(obj::objT)
+#    objref = Base.cconvert(Ref{objT}, obj)
+#    new(cfunction(CallWrapper{Ret}(), map_rettype(Ret), get_cfunc_argtype(objT, Args)), Base.unsafe_convert(Ref{objT}, objref), objref, objT)
+#  end
+#(::Type{FunctionWrapper{Ret,Args}}){Ret,Args}(obj::FunctionWrapper{Ret,Args}) = obj
+#                                            end
+
+mutable struct Wrapper end
+
 function integrate(C::AcbField, F, a, b;
                    rel_tol = -1.0,
                    abs_tol = -1.0,
@@ -64,7 +87,10 @@ function integrate(C::AcbField, F, a, b;
       return zero(Cint)
    end
 
-   gptr = cfunction(g, Cint, (Ptr{acb}, Ptr{acb}, Ptr{Void}, Int, Int))
+
+   F = FunctionWrapper()
+
+   gptr = cfunction(F, Cint, (Ptr{Void}, Ptr{acb}, Ptr{acb}, Ptr{Void}, Int, Int))
 
    status = ccall((:acb_calc_integrate, :libarb), UInt,
                   (Ref{acb},                       #res
