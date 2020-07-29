@@ -342,13 +342,18 @@ function show(io::IO, a::AnticNumberField)
 end
 
 function show(io::IO, x::nf_elem)
+  println("1")
    cstr = ccall((:nf_elem_get_str_pretty, libantic), Ptr{UInt8},
                 (Ref{nf_elem}, Ptr{UInt8}, Ref{AnticNumberField}),
                  x, string(var(parent(x))), parent(x))
+  println("2")
    s = unsafe_string(cstr)
+  println("3")
    ccall((:flint_free, libflint), Nothing, (Ptr{UInt8},), cstr)
+  println("4")
 
    s = replace(s, "/" => "//")
+  println("5")
 
    print(io, s)
 
