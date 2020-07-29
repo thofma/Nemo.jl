@@ -66,7 +66,10 @@ end
    K, a = NumberField(x^3 + 3x + 1, "a")
    g = K(x^2 + 2x - 7)
 
+   println("printing")
+
    @test string(g) == "a^2 + 2*a - 7"
+   println("done")
 end
 
 @testset "nf_elem.fmpz_mat_conversions..." begin
