@@ -344,7 +344,7 @@ end
 function show(io::IO, x::nf_elem)
   println("1")
    cstr = ccall((:nf_elem_get_str_pretty, libantic), Cstring,
-                (Ref{nf_elem}, Ptr{UInt8}, Ref{AnticNumberField}),
+                (Ref{nf_elem}, Cstring, Ref{AnticNumberField}),
                  x, string(var(parent(x))), parent(x))
   println("2")
    s = unsafe_string(cstr)
